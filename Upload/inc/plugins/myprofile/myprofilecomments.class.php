@@ -1210,8 +1210,10 @@ if(use_xmlhttprequest == "1")
 			$commentor_uid = $comment["cuid"];
 			eval("\$comments_reply = \"".$templates->get('myprofile_comments_comment_reply')."\";");
 		}
-		
-		eval("\$comments_report = \"".$templates->get('myprofile_comments_comment_report')."\";");
+		/* if the user isn't a guest, and the user's usergroup isn't banned, can report */
+		if($mybb->user["uid"] > 0 && $mybb->usergroup["usergroup"]["isbannedgroup"] != "1") {
+			eval("\$comments_report = \"".$templates->get('myprofile_comments_comment_report')."\";");
+		}
 		
 		if($comment["isprivate"] == "1") {
 			$comment_private = $lang->mp_comments_comment_private;
@@ -1269,7 +1271,7 @@ if(use_xmlhttprequest == "1")
 			return true;
 		}
 		/* If the user is only accepting comments from friends */
-		if($target["mpwhocancomment"] == "1" && ! in_array($user["uid"], explode($target["buddylist"]))) {
+		if($target["mpwhocancomment"] == "1" && ! in_array($user["uid"], explode(",", $target["buddylist"]))) {
 			$error_message = $lang->mp_comments_not_friend_with_user;
 			return false;
 		}
@@ -1907,7 +1909,7 @@ if(use_xmlhttprequest == "1")
 					$verified = true;
 					$comment = $db->fetch_array($query);
 					$id = $comment["cid"];
-					$id2 = $comment["uid"]; // user who received the comment
+					$id2 = $comment["userid"]; // user who received the comment
 					$id3 = $comment["cuid"]; // user who made the comment
 					$report_type_db = "type = 'comment'";
 				}
