@@ -193,7 +193,7 @@ class MyProfileBuddyList {
 						$td_class = alt_trow();
 						$profile_link = get_profile_link($buddy["uid"]);
 						list($avatar_src, $avatar_width_height) = array_values(format_avatar($buddy["avatar"], $buddy["avatardimensions"], $settings["mpbuddylistavatarmaxdimensions"]));
-						$username = htmlspecialchars_uni($buddy["username"]);
+						$username = format_name(htmlspecialchars_uni($buddy["username"]), $buddy["usergroup"], $buddy["displaygroup"]);
 						eval("\$row_content .= \"".$templates->get('myprofile_buddylist_buddy')."\";");
 					}
 					else {
