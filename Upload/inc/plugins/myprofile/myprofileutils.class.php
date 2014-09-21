@@ -1,5 +1,29 @@
 <?php
 
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Mohamed Benjelloun
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE. 
+ */
+ 
 // Disallow direct access to this file for security reasons
 if(!defined("IN_MYBB"))
 {
@@ -155,11 +179,26 @@ abstract class MyProfileUtils {
 	 }
 	
 	/**
-	 * Check if MyAlerts exists.
+	 * Check if MyAlerts 2.0 exists.
 	 */
 	public static function myalerts_exists() {
-		/* all we need to know to define if MyAlerts exists is to check for its info() routine, Alerts class, Alerts::addAlert and Alerts::addMassAlert methods */
-		return function_exists("myalerts_info") && class_exists("Alerts") && method_exists("Alerts", "addAlert") && method_exists("Alerts", "addMassAlert");
+		global $mybbstuff_myalerts_alert_type_manager;
+		/* MyAlerts 2.0 exists if the Alert Type Manager has been instantiated, thanks Euan T. :D */
+		return !empty($mybbstuff_myalerts_alert_type_manager);
+	}
+	
+	public static function lang_load_myprofile() {
+		global $lang;
+		if(! $lang->mp_myprofile) {
+			$lang->load("myprofile");
+		}
+	}
+	
+	public static function lang_load_config_myprofile() {
+		global $lang;
+		if(! $lang->mp_my_profile) {
+			$lang->load("config_myprofile");
+		}
 	}
 	
 	private function __construct() {

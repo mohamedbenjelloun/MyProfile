@@ -1,35 +1,42 @@
 <?php
 /**
- * MyBB 1.8 English Language Pack
- * Copyright 2014 MyBB Group, All Rights Reserved
+ * The MIT License (MIT)
  *
+ * Copyright (c) 2014 Mohamed Benjelloun
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE. 
  */
 
 // plugin's info()
 $l['mp_myprofile'] = "MyProfile";
-$l['mp_myprofile_desc'] = "Enhances default users' profiles with tabbed profiles, comments, last visits and more.";
+$l['mp_myprofile_desc'] = "Enhances default users' profiles with comments, last visits buddy lists and more.";
 
 // settings
-//// profile tabs
-$l['mp_myprofile_tabs'] = "MyProfile Tabs";
-$l['mp_myprofile_tabs_desc'] = "Here you can specify all the settings that are related to the tabbed profiles.";
-$l['mp_myprofile_tabs_enabled'] = "MyProfile Tabs Enabled";
-$l['mp_myprofile_tabs_enabled_desc'] = "Set to Yes if you want to enable tabbed profiles, or No to disable them.";
-$l['mp_myprofile_tabs_effect'] = "Tabs Animation Effect";
-$l['mp_myprofile_tabs_effect_desc'] = "Choose the animation effect that happens when changing tabs. You want to know how each effect looks? Try it out ;)";
-$l['mp_myprofile_tabs_effect_flip'] = "Flip";
-$l['mp_myprofile_tabs_effect_scaledown'] = "Scale Down";
-$l['mp_myprofile_tabs_effect_scaleup'] = "Scale Up";
-
 //// comments
 $l['mp_myprofile_comments'] = "MyProfile Comments";
 $l['mp_myprofile_comments_desc'] = "Here you can enhance your users' profiles with a powerful comment system.";
 $l['mp_myprofile_comments_enabled'] = "MyProfile Comments Enabled";
 $l['mp_myprofile_comments_enabled_desc'] = "Set to Yes if you want to enable profile comments, or No to disable them.";
 $l['mp_myprofile_comments_ajax_enabled'] = "AJAX enabled";
-$l['mp_myprofile_comments_ajax_enabled_desc'] = "Set to Yes to enable requests on AJAX, this allows the user to edit / store / retrieve comments without having to reload the page on every action performed. If you don't know what to set, leave it to Yes.";
+$l['mp_myprofile_comments_ajax_enabled_desc'] = "Set to Yes to enable requests on AJAX, this allows the user to edit / store / retrieve comments without having to reload the page on every action performed. If you don't know what to set this to, leave it to Yes. <strong>Please notice that some actions will still be performed on AJAX</strong>.";
 $l['mp_myprofile_comments_notification'] = "Notification System";
-$l['mp_myprofile_comments_notification_desc'] = "Please select the notification system that MyProfile Comments should use to inform users when they receive new comments. If you choose <em>MyAlerts or Alert bar</em>, it will first look for the MyAlerts plugin if installed, if not, it will use the Alert bar. If you choose <em>MyAlerts</em>, it will only use it if the plugin is installed.";
+$l['mp_myprofile_comments_notification_desc'] = "Please select the notification system that MyProfile Comments should use to inform users when they receive new comments. If you choose <strong>MyAlerts or Alert bar</strong>, it will first look for the MyAlerts plugin if installed, if not, it will use the Alert bar. If you choose <em>MyAlerts</em>, it will only use it if the plugin is installed.";
 $l['mp_myprofile_comments_notification_myalerts_alertbar'] = "MyAlerts or Alert bar";
 $l['mp_myprofile_comments_notification_myalerts'] = "MyAlerts";
 $l['mp_myprofile_comments_notification_alertbar'] = "Alert bar";
@@ -73,6 +80,16 @@ $l['mp_myprofile_visitors_enabled'] = "MyProfile Last Visitors Enabled";
 $l['mp_myprofile_visitors_enabled_desc'] = "Set to Yes if you want to enable last visitors, or No to disable it.";
 $l['mp_myprofile_visitors_record'] = "Number Of Visitors To Retrieve";
 $l['mp_myprofile_visitors_record_desc'] = "Select the number of visitors you want to retrieve on each user's profile.";
+
+//// buddylist
+$l['mp_myprofile_buddylist'] = "MyProfile Buddy List";
+$l['mp_myprofile_buddylist_desc'] = "Enables you to show a buddy list box on each user's profile.";
+$l['mp_myprofile_buddylist_enabled']  = "MyProfile Buddy List Enabled";
+$l['mp_myprofile_buddylist_enabled_desc'] = "Set to Yes if you want to enable buddy list box on users profiles, or No to disable it.";
+$l['mp_myprofile_buddylist_record'] = "Number Of Buddies To Retrieve On Each Page";
+$l['mp_myprofile_buddylist_record_desc'] = "Select the number of buddies you want to retrieve on each user's profile. Each line is constitued of 4 buddies, so selecting 8 for example will display a maximum of 2 lines.";
+$l['mp_myprofile_buddylist_avatar_max_dimensions'] = "Avatar Maximum Dimensions";
+$l['mp_myprofile_buddylist_avatar_max_dimensions_desc'] = "Set the maximum avatar dimensions, in the form <b>HEIGHTxWIDTH</b>, where HEIGHT and WIDTH are respectively the maximum height and width of the avatar.";
 
 // acp
 $l['mp_options_can_use_image_background'] = "Can use image background?";

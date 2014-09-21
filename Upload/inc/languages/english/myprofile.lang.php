@@ -1,5 +1,29 @@
 <?php
 
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Mohamed Benjelloun
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE. 
+ */
+ 
 // report center
 $l['report_reason_comment'] = "Report Comment";
 $l['mp_report_from'] = "<a href=\"{1}\">Comment</a> from {2}";
@@ -26,7 +50,7 @@ $l['mp_profile_comments_no_comment_selected'] = "No comment selected.";
 $l['mp_profile_last_visitors'] = "Last Visitors";
 $l['mp_profile_comments_no_user_selected'] = "No user selected.";
 $l['mp_profile_visitors_no_visit'] = "Not visited yet.";
-$l['mp_profile_friends'] = "Friends";
+$l['mp_profile_buddylist'] = "Buddy List";
 $l['mp_profile_comments_comments'] = "Comments";
 $l['mp_profile_comments_total'] = "Total";
 
@@ -46,6 +70,7 @@ $l['mp_comments_stats_sent'] = "sent";
 $l['mp_comments_stats_received'] = "received";
 $l['mp_comments_moderation'] = "Moderation";
 $l['mp_comments_action_delete_all_comments'] = "Delete all comments";
+$l['mp_comments_dismiss_notice'] = "Dismiss this notice";
 $l['mp_comments_cannot_send_comments'] = "You can't send comments.";
 $l['mp_comments_banned_user'] = "You can't sent comments to a banned user.";
 $l['mp_comments_user_closed_comments'] = "The user has disabled all comments.";
@@ -62,6 +87,12 @@ $l['mp_comments_cannot_edit_comment'] = "You can't edit the selected comment.";
 $l['mp_comments_comment_edited_successfully'] = "The comment has been edited successfully.";
 $l['mp_comments_no_comment_to_display'] = "No comment to display.";
 $l['mp_comments_confirm_delete'] = "Are you sure you want to delete that comment?";
+$l['mp_comments_confirm_delete_all'] = "Are you sure you want to delete all the comments?";
+$l['mp_comments_comments_deleted_successfully'] = "All the comments have been deleted successfully.";
 
 // global
 $l['mp_comments_new_comments'] = "You have received <b>{1}{2} new comment(s){3}</b> in your profile.";
+
+// buddylist 
+$l['mp_buddylist_no_friend'] = "{1} hasn't made any friends yet.";
+$l['mp_buddylist_friends'] = "{1} has made {2} friends, {3} of whom are displayed on this page.";

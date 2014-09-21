@@ -1,5 +1,25 @@
 /**
- * MyProfile 0.1
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Mohamed Benjelloun
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE. 
  */
 
 var MyProfile = {
@@ -24,6 +44,7 @@ var MyProfile = {
         /* report buttons are always hooked either way */
         $(document).on("click", "button.comments-report", MyProfile.commentsReport)
                 .on("submit", "form#comments-edit-form", MyProfile.commentsEditSubmit)
+				.on("click", "button.comments-delete-all", MyProfile.commentsDeleteAll)
                 .on("click", "button.comments-edit", MyProfile.commentsEdit);
         if (!this.ajax) {
             return;
@@ -33,7 +54,6 @@ var MyProfile = {
                 .on("click", "button.comments-delete", MyProfile.commentsDelete)
                 .on("click", "button.comments-reply", MyProfile.commentsReply)
                 .on("click", "button.comments-approve", MyProfile.commentsApprove)
-                .on("click", "button.comments-delete-all", MyProfile.commentsDeleteAll)
                 .on("submit", "form#comments-form", MyProfile.commentsSubmit);
 
         window.onhashchange = MyProfile.onHashChange;
@@ -154,9 +174,9 @@ var MyProfile = {
             },
             "dataType": "json",
             "success": function(obj) {
-                if (!obj.error) {
+                if (! obj.error) {
+					instance.val("");
                     MyProfile.commentsRetrieve(1);
-                    instance.val("");
                 }
                 else {
                     alert(obj.error_message);
@@ -198,7 +218,7 @@ var MyProfile = {
     },
     /* called when a moderator is deleting all comments on a profile */
     commentsDeleteAll: function(event) {
-        if (!confirm(lang.mp_comments_confirm_delete)) {
+        if (!confirm(lang.mp_comments_confirm_delete_all)) {
             return;
         }
         $.ajax({
@@ -211,8 +231,16 @@ var MyProfile = {
             },
             "success": function(obj) {
                 if (!obj.error) {
-                    MyProfile.commentsRetrieve();
+					if(MyProfile.ajax) {
+						MyProfile.commentsRetrieve(1);
+					}
+					else {
+						window.location.href = rootpath + "/misc.php?action=comments-delete-all&memberuid=" + MyProfile.memberUid + "&my_post_key=" + my_post_key;
+					}
                 }
+				else {
+					alert(obj.error_message);
+				}
             }
         });
     },

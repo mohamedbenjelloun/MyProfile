@@ -1,11 +1,37 @@
 <?php
 
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Mohamed Benjelloun
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE. 
+ */
+ 
 // Disallow direct access to this file for security reasons
 if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+/* load template */
+$plugins->add_hook("global_start", array(MyProfileVisitors::get_instance(), "global_start"));
 $plugins->add_hook("member_profile_end", array(MyProfileVisitors::get_instance(), "member_profile_end"));
 
 class MyProfileVisitors {
@@ -13,7 +39,8 @@ class MyProfileVisitors {
 	private static $instance = null;
 	
 	public function install() {
-		global $db;
+		global $db, $lang;
+		MyProfileUtils::lang_load_config_myprofile();
 		$tables = array();
 		$collation = $db->build_create_table_collation();
 		
@@ -30,40 +57,6 @@ class MyProfileVisitors {
 		foreach($tables as $table) {
 			$db->write_query($table);
 		}
-	}
-	
-	public function is_installed() {
-		global $db;
-		return $db->table_exists("myprofilevisitors");
-	}
-	
-	public function uninstall() {
-		global $db;
-		$db->write_query("DROP TABLE IF EXISTS " . TABLE_PREFIX . "myprofilevisitors");
-	}
-	
-	public function activate() {
-		global $db, $lang;
-		require_once MYBB_ROOT . "inc/adminfunctions_templates.php";
-		$lang->load("config_myprofile");
-		$templates = array();
-		
-		$templates["myprofile_visitors"] = '<br /><table width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
-<tr>
-<td width="100%" valign="top">
-<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
-<tr>
-<td colspan="2" class="thead"><strong>{$lang->mp_profile_last_visitors}</strong></td>
-</tr>
-<tr>
-<td class="trow1">{$lastvisitors}</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-';
-		MyProfileUtils::insert_templates($templates);
 		
 		$settinggroups = array(
 			"name" => "myprofilevisitors",
@@ -100,16 +93,16 @@ class MyProfileVisitors {
 		);
 		
 		MyProfileUtils::insert_settings($settings);
-		find_replace_templatesets("member_profile", "#" . preg_quote('{$contact_details}') . "#i", '{$myprofile_visitors}{$contact_details}');
 	}
 	
-	public function deactivate() {
+	public function is_installed() {
 		global $db;
-		require_once MYBB_ROOT . "inc/adminfunctions_templates.php";
-		$templates = array(
-			"myprofile_visitors"
-		);
-		MyProfileUtils::delete_templates($templates);
+		return $db->table_exists("myprofilevisitors");
+	}
+	
+	public function uninstall() {
+		global $db;
+		$db->drop_table("myprofilevisitors");
 		
 		$settings = array(
 			"mpvisitorsenabled",
@@ -121,7 +114,47 @@ class MyProfileVisitors {
 			"myprofilevisitors"
 		);
 		MyProfileUtils::delete_settinggroups($settinggroups);
+	}
+	
+	public function activate() {
+		require_once MYBB_ROOT . "inc/adminfunctions_templates.php";
+		$templates = array();
+		
+		$templates["myprofile_visitors"] = '<br /><table width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
+<tr>
+<td width="100%" valign="top">
+<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
+<tr>
+<td colspan="2" class="thead"><strong>{$lang->mp_profile_last_visitors}</strong></td>
+</tr>
+<tr>
+<td class="trow1">{$lastvisitors}</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+';
+		MyProfileUtils::insert_templates($templates);
+		
+		find_replace_templatesets("member_profile", "#" . preg_quote('{$contact_details}') . "#i", '{$myprofile_visitors}{$contact_details}');
+	}
+	
+	public function deactivate() {
+		require_once MYBB_ROOT . "inc/adminfunctions_templates.php";
+		$templates = array(
+			"myprofile_visitors"
+		);
+		MyProfileUtils::delete_templates($templates);
+		
 		find_replace_templatesets("member_profile", "#" . preg_quote('{$myprofile_visitors}') . "#i", '', 0);
+	}
+	
+	public function global_start() {
+		global $templatelist;
+		if(defined('THIS_SCRIPT') && THIS_SCRIPT == "member.php") {
+			$templatelist .= ",myprofile_visitors";
+		}
 	}
 	
 	public function member_profile_end() {
@@ -129,18 +162,18 @@ class MyProfileVisitors {
 		if($settings["mpvisitorsenabled"] != "1") {
 			return;
 		}
-		$lang->load("myprofile");
+		MyProfileUtils::lang_load_myprofile();
 		// we don't care if I'm a guest, or I'm visiting my own profile
 		if(isset($mybb->user["uid"]) && $mybb->user["uid"] > 0 && $mybb->user["uid"] != $memprofile["uid"]) {
 		
-			$query = $db->simple_select("myprofilevisitors", "*", "uid='{$db->escape_string($memprofile['uid'])}' AND vuid='{$db->escape_string($mybb->user['uid'])}'");
+			$query = $db->simple_select("myprofilevisitors", "*", "uid='{$memprofile['uid']}' AND vuid='{$mybb->user['uid']}'");
 			
 			if($db->num_rows($query) > 0) {
 				// update
 				$update_array = array(
 					"time" => TIME_NOW
 				);
-				$db->update_query("myprofilevisitors", $update_array, "uid='{$db->escape_string($memprofile['uid'])}' AND vuid='{$db->escape_string($mybb->user['uid'])}'");
+				$db->update_query("myprofilevisitors", $update_array, "uid='{$memprofile['uid']}' AND vuid='{$mybb->user['uid']}'");
 			}
 			else {
 				// insert
@@ -153,7 +186,7 @@ class MyProfileVisitors {
 			}
 		}
 		
-		$query = $db->simple_select("myprofilevisitors", "*", "uid='{$db->escape_string($memprofile['uid'])}'", array(
+		$query = $db->simple_select("myprofilevisitors", "*", "uid='{$memprofile['uid']}'", array(
 			"limit" => isset($settings["mpvisitorsrecord"]) && is_numeric($settings["mpvisitorsrecord"]) ? $settings["mpvisitorsrecord"] : "10",
 			"order_by" => "time",
 			"order_dir" => "DESC"
@@ -170,7 +203,7 @@ class MyProfileVisitors {
 					$date = my_date($settings["dateformat"], $visit["time"]);
 					$time = my_date($settings["timeformat"], $visit["time"]);
 					
-					$username = build_profile_link(format_name($visitor["username"], $visitor["usergroup"], $visitor["displaygroup"]), $visitor["uid"]);
+					$username = build_profile_link(format_name(htmlspecialchars_uni($visitor["username"]), $visitor["usergroup"], $visitor["displaygroup"]), $visitor["uid"]);
 					$lastvisitors_array[] = $username . " ({$date} - {$time})";
 				}
 			}
