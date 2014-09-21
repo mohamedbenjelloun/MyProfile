@@ -993,6 +993,16 @@ if(use_xmlhttprequest == "1")
 		$rows = $this->comments_count($memprofile);
 		$result->rows = $rows;
 		$result->pagination = multipage($rows, $settings['mpcommentsperpage'], $page, "#comments/{page}");
+		
+		/* wait, is the user requesting comments for own profile? then maybe dismiss any notifications he's got */
+		if($mybb->user["uid"] > 0 && $memprofile["uid"] == $mybb->user["uid"]) {
+			$update_array = array(
+				"mpnewcomments" => "0"
+			);
+			$db->update_query("users", $update_array, "uid='{$mybb->user['uid']}'", "1");
+			$mybb->user["mpnewcomments"] = "0";
+		}
+		
 		MyProfileUtils::output_json($result);
 	}
 	
@@ -1311,8 +1321,11 @@ if(use_xmlhttprequest == "1")
 			$editable = $comment["time"] > $time_limit;
 		}
 		/* if the user has already approved the message, the user shouldn't be able to edit it anyway. we add $editable so it doesn't perform the other tests if it's not editable anyway. */
-		if($editable && $memprofile["mpcommentsapprove"] == "1" && $comment["approved"] == "1") {
-			$editable = false;
+		if($editable && $comment["approved"] == "1") {
+			$memprofile = get_user($comment["userid"]);
+			if($memprofile["mpcommentsapprove"] == "1") {
+				$editable = false;
+			}
 		}
 		return $editable;
 	}
