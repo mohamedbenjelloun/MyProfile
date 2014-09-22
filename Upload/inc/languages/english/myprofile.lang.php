@@ -89,6 +89,7 @@ $l['mp_comments_no_comment_to_display'] = "No comment to display.";
 $l['mp_comments_confirm_delete'] = "Are you sure you want to delete that comment?";
 $l['mp_comments_confirm_delete_all'] = "Are you sure you want to delete all the comments?";
 $l['mp_comments_comments_deleted_successfully'] = "All the comments have been deleted successfully.";
+$l['mp_comments_wait_flood_time'] = "Please wait {1} second(s) before you can make another comment.";
 
 // global
 $l['mp_comments_new_comments'] = "You have received <b>{1}{2} new comment(s){3}</b> in your profile.";

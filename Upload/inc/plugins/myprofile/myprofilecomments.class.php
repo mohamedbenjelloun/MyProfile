@@ -71,12 +71,7 @@ if(class_exists("MybbStuff_MyAlerts_Formatter_AbstractFormatter")) {
 		 * @return string The formatted alert string.
 		 */
 		public function formatAlert(MybbStuff_MyAlerts_Entity_Alert $alert, array $outputAlert){
-			return $this->lang->sprintf(
-				$this->lang->mycustomalert_alert_format_string,
-				$outputAlert['from_user_profilelink'],
-				(int) $alert->getUserId(),
-				$outputAlert['dateline']
-			);
+			
 		}
 		/**
 		 * Init function called before running formatAlert(). Used to load language files and initialize other required resources.
@@ -84,9 +79,7 @@ if(class_exists("MybbStuff_MyAlerts_Formatter_AbstractFormatter")) {
 		 * @return void
 		 */
 		public function init() {
-			if (!$this->lang->mycustomalert) {
-				$this->lang->load('mycustomalert');
-			}
+			
 		}
 		/**
 		 * Let's not get lost in between things, this will return the alert type code
@@ -128,10 +121,18 @@ class MyProfileComments {
 			$db->write_query($table);
 		}
 		
-		$db->add_column("usergroups", "canmanagecomments", "int(1) NOT NULL default '0'");
-		$db->add_column("usergroups", "cansendcomments", "int(1) NOT NULL default '1'");
-		$db->add_column("usergroups", "caneditowncomments", "int(1) NOT NULL default '1'");
-		$db->add_column("usergroups", "candeleteowncomments", "int(1) NOT NULL default '0'");
+		if(! $db->field_exists("canmanagecomments", "usergroups")) {
+			$db->add_column("usergroups", "canmanagecomments", "int(1) NOT NULL default '0'");
+		}
+		if(! $db->field_exists("cansendcomments", "usergroups")) {
+			$db->add_column("usergroups", "cansendcomments", "int(1) NOT NULL default '1'");
+		}
+		if(! $db->field_exists("caneditowncomments", "usergroups")) {
+			$db->add_column("usergroups", "caneditowncomments", "int(1) NOT NULL default '1'");
+		}
+		if(! $db->field_exists("candeleteowncomments", "usergroups")) {
+			$db->add_column("usergroups", "candeleteowncomments", "int(1) NOT NULL default '0'");
+		}
 		
 		/* giving "manage" access to administrators, and delete own comments */
 		$db->update_query("usergroups", array("canmanagecomments" => "1", "candeleteowncomments" => "1"), "gid='4'");
@@ -140,11 +141,25 @@ class MyProfileComments {
 		
 		$cache->update_usergroups();
 		
-		$db->add_column("users", "mpcommentsopen", "int(10) NOT NULL default '1'");
-		$db->add_column("users", "mpcommentnotification", "int(10) NOT NULL default '1'");
-		$db->add_column("users", "mpwhocancomment", "int(10) NOT NULL default '2'"); // 0=no one, 1=friendlist, 2=everyone
-		$db->add_column("users", "mpnewcomments", "int(10) NOT NULL default '0'");
-		$db->add_column("users", "mpcommentsapprove", "int(10) NOT NULL default '0'");
+		if(! $db->field_exists("mpcommentsopen", "users")) {
+			$db->add_column("users", "mpcommentsopen", "int(10) NOT NULL default '1'");
+		}
+		
+		if(! $db->field_exists("mpcommentnotification", "users")) {
+			$db->add_column("users", "mpcommentnotification", "int(10) NOT NULL default '1'");
+		}
+		
+		if(! $db->field_exists("mpwhocancomment", "users")) {
+			$db->add_column("users", "mpwhocancomment", "int(10) NOT NULL default '2'"); // 0=no one, 1=friendlist, 2=everyone
+		}
+		
+		if(! $db->field_exists("mpnewcomments", "users")) {
+			$db->add_column("users", "mpnewcomments", "int(10) NOT NULL default '0'");
+		}
+		
+		if(! $db->field_exists("mpcommentsapprove", "users")) {
+			$db->add_column("users", "mpcommentsapprove", "int(10) NOT NULL default '0'");
+		}
 		
 		
 		$settinggroups = array(
@@ -248,6 +263,23 @@ none={$lang->mp_myprofile_comments_notification_none}",
 45=45
 60=60",
 			"value" => "0",
+			"gid" => $gid
+		);
+		
+		$settings[] = array(
+			"name" => "mpcommentstimeflood",
+			"title" => $lang->mp_myprofile_comments_flood_time,
+			"description" => $lang->mp_myprofile_comments_flood_time_desc,
+			"optionscode" => "select
+0=0
+5=5
+10=10
+15=15
+20=20
+30=30
+45=45
+60=60",
+			"value" => "20",
 			"gid" => $gid
 		);
 		
@@ -364,18 +396,43 @@ none={$lang->mp_myprofile_comments_notification_none}",
 		
 		$db->drop_table("myprofilecomments");
 		
-		$db->drop_column("usergroups", "canmanagecomments");
-		$db->drop_column("usergroups", "cansendcomments");
-		$db->drop_column("usergroups", "caneditowncomments");
-		$db->drop_column("usergroups", "candeleteowncomments");
+		if($db->field_exists("canmanagecomments", "usergroups")) {
+			$db->drop_column("usergroups", "canmanagecomments");
+		}
+		
+		if($db->field_exists("cansendcomments", "usergroups")) {
+			$db->drop_column("usergroups", "cansendcomments");
+		}
+		
+		if($db->field_exists("caneditowncomments", "usergroups")) {
+			$db->drop_column("usergroups", "caneditowncomments");
+		}
+		
+		if($db->field_exists("candeleteowncomments", "usergroups")) {
+			$db->drop_column("usergroups", "candeleteowncomments");
+		}
 		
 		$cache->update_usergroups();
 		
-		$db->drop_column("users", "mpcommentsopen");
-		$db->drop_column("users", "mpcommentnotification");
-		$db->drop_column("users", "mpwhocancomment");
-		$db->drop_column("users", "mpnewcomments");
-		$db->drop_column("users", "mpcommentsapprove");
+		if($db->field_exists("mpcommentsopen", "users")) {
+			$db->drop_column("users", "mpcommentsopen");
+		}
+		
+		if($db->field_exists("mpcommentnotification", "users")) {
+			$db->drop_column("users", "mpcommentnotification");
+		}
+		
+		if($db->field_exists("mpwhocancomment", "users")) {
+			$db->drop_column("users", "mpwhocancomment");
+		}
+		
+		if($db->field_exists("mpnewcomments", "users")) {
+			$db->drop_column("users", "mpnewcomments");
+		}
+		
+		if($db->field_exists("mpcommentsapprove", "users")) {
+			$db->drop_column("users", "mpcommentsapprove");
+		}
 		
 		$settings = array(
 			"mpcommentsenabled",
@@ -628,7 +685,7 @@ MyProfile.commentsPage = {$comments_page};
 </table>
 </form>
 <script>$(function() {
-var original_text = "{$original_text}";
+var original_text = {$original_text};
 var instance = {};
 if(MyProfile.commentsSCEditor) {
 $("#message_edit").sceditor(opt_editor);
@@ -637,7 +694,7 @@ instance = $("#message_edit").sceditor(\'instance\');
 else {
 instance = $("#message_edit");
 }
-instance.val(original_text);
+instance.val(original_text.message);
 });
 </script>
 </div>
@@ -1183,14 +1240,11 @@ if(use_xmlhttprequest == "1")
 		
 		$usergroups = $cache->read("usergroups");
 		$editable = $this->can_edit_comment($comment);
-		$comment["editable"] = $editable;
 		$approvable = $this->can_approve_comment($comment);
-		$comment["approvable"] = $approvable;
 		$deletable = $this->can_delete_comment($comment);
-		$comment["deletable"] = $deletable;
 		/* replyable: well, it's replyable if I'm memprofile, and I'm trying to send a comment to the commentor (but I am not the commentor, otherwise it will be an infinite loop) */
 		$replyable = $mybb->user["uid"] == $memprofile["uid"] && $comment["cuid"] != $comment["userid"] && $this->can_send_comments($memprofile, $comment);
-		$comment["replyable"] = $replyable;
+		$reportable = $this->can_report_comment($comment);
 		
 		/* now we add html content to the comment */
 		list($avatar_src, $avatar_width_height) = array_values(format_avatar($comment["avatar"], $comment["avatardimensions"]));
@@ -1220,8 +1274,8 @@ if(use_xmlhttprequest == "1")
 			$commentor_uid = $comment["cuid"];
 			eval("\$comments_reply = \"".$templates->get('myprofile_comments_comment_reply')."\";");
 		}
-		/* if the user isn't a guest, and the user's usergroup isn't banned, can report */
-		if($mybb->user["uid"] > 0 && $mybb->usergroup["usergroup"]["isbannedgroup"] != "1") {
+		
+		if($reportable) {
 			eval("\$comments_report = \"".$templates->get('myprofile_comments_comment_report')."\";");
 		}
 		
@@ -1241,13 +1295,22 @@ if(use_xmlhttprequest == "1")
 		return $comment_content;
 	}
 	
+	public function can_report_comment($comment) {
+		global $mybb;
+		/* if the user isn't a guest, and the user's usergroup isn't banned, can report */
+		if($this->can_manage_comments()) {
+			return true;
+		}
+		return $mybb->user["uid"] > 0 && $mybb->user["uid"] != $comment["cuid"] && $mybb->usergroup["usergroup"]["isbannedgroup"] != "1";
+	}
 	
 	/**
 	 * Can $user comment on $memprofile ? An empty $user means a guest
 	 * Provide an empty variable as third parameter to receive the error message to why the $user can't send a comment to the $target
+	 * $ignore_flood should be true if you want to ignore flood time, this is useful when you want to show the comment form if the only error is flood time.
 	 */
-	public function can_send_comments($user, $target, &$error_message = "") {
-		global $settings, $cache, $lang;
+	public function can_send_comments($user, $target, &$error_message = "", $ignore_flood = false) {
+		global $mybb, $settings, $cache, $lang, $db;
 		MyProfileUtils::lang_load_myprofile();
 		$usergroups = $cache->read("usergroups");
 		/* if the user is a mod, always return true please */
@@ -1275,6 +1338,17 @@ if(use_xmlhttprequest == "1")
 		if($settings["mpcommentsignoreenabled"] == "1" && in_array($user["uid"], explode(",", $target["ignorelist"]))) {
 			$error_message = $lang->mp_comments_user_ignored_you;
 			return false;
+		}
+		/* check flood time ? */
+		if(! $ignore_flood && $settings["mpcommentstimeflood"] > "0") {
+			$flood_time = TIME_NOW - $settings["mpcommentstimeflood"];
+			$query = $db->simple_select("myprofilecomments", "`time`", "cuid = '{$mybb->user["uid"]}' AND `time` > {$flood_time}", array("limit" => 1), true);
+			if($db->num_rows($query) > 0) {
+				$time = $db->fetch_field($query, "time");
+				$seconds = $time - $flood_time;
+				$error_message = $lang->sprintf($lang->mp_comments_wait_flood_time, $seconds);
+				return false;
+			}
 		}
 		/* I'm making a comment on my profile */
 		if($user["uid"] == $target["uid"]) {
@@ -1758,7 +1832,9 @@ if(use_xmlhttprequest == "1")
 			MyProfileUtils::output_error($lang->mp_comments_cannot_edit_comment, 400);
 		}
 		
-		$original_text = $comment["message"];
+		$original_text = new stdClass();
+		$original_text->message = $comment["message"];
+		$original_text = json_encode($original_text);
 		if($settings["mpcommentsstatusenabled"] == "1") {
 			if($comment["isprivate"] == "0") {
 				$comment_public_selected = 'selected="selected"';
@@ -1808,7 +1884,7 @@ if(use_xmlhttprequest == "1")
 		$comments_page = $page;
 		$comments_sceditor = 0;
 		
-		if($this->can_send_comments($mybb->user, $memprofile)) {
+		if($this->can_send_comments($mybb->user, $memprofile, $ignored_error_message, true)) {
 			$show_smilies = $settings["mpcommentsallowsmilies"] == "1";
 			if($settings["mpcommentsshowwysiwyg"] == "1") {
 				$codebuttons = build_mycode_inserter("message", $show_smilies);
@@ -2034,16 +2110,24 @@ if(use_xmlhttprequest == "1")
 	 */
 	public function build_comment_link($cid, $href=false, $link_name="", $other_params="") {
 		global $db, $settings, $mybb;
+		$cid = (int) $cid;
 		//SELECT a.*, (select count(*) from `mybb_myprofilecomments` b where a.cid >= b.cid) as cnt FROM `mybb_myprofilecomments` a WHERE a.cid='2'
-		$query = $db->query("SELECT a.*, (SELECT COUNT(*) FROM " . TABLE_PREFIX . "myprofilecomments b WHERE a.cid = b.cid) AS rownum FROM " . TABLE_PREFIX . "myprofilecomments a WHERE a.cid='{$db->escape_string($cid)}'");
+		$query = $db->query("SELECT a.*, (SELECT COUNT(*) FROM " . TABLE_PREFIX . "myprofilecomments b WHERE a.cid <= b.cid) AS rownum FROM " . TABLE_PREFIX . "myprofilecomments a WHERE a.cid='{$cid}'");
 
 		if($db->num_rows($query) != 1) {
 			return "";
 		}
 		$comment = $db->fetch_array($query);
 		$user = get_user($comment["userid"]);
-		$complement = "#comments/" . ceil($comment["rownum"] / $settings["mpcommentsperpage"]) . "/highlight/" . $cid;
-		$profile_link = "{$mybb->settings['bburl']}/" . get_profile_link($user["uid"]) . $complement;
+		$page = ceil($comment["rownum"] / $settings["mpcommentsperpage"]);
+		$profile_link = "{$mybb->settings['bburl']}/" . get_profile_link($user["uid"]);
+		if($settings["mpcommentsajaxenabled"]) {
+			$complement = "#comments/" . $page . "/highlight/" . $cid;
+		}
+		else {
+			$complement = "&page={$page}&highlight={$cid}";
+		}
+		$profile_link .= $complement;
 		if($href) {
 			$profile_link = "<a href=\"{$profile_link}\"{$other_params}>{$link_name}</a>";
 		}

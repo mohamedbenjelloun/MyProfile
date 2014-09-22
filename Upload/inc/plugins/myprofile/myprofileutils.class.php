@@ -184,7 +184,9 @@ abstract class MyProfileUtils {
 	public static function myalerts_exists() {
 		global $mybbstuff_myalerts_alert_type_manager;
 		/* MyAlerts 2.0 exists if the Alert Type Manager has been instantiated, thanks Euan T. :D */
-		return !empty($mybbstuff_myalerts_alert_type_manager);
+		/* until MyAlerts 2.0 is out, return false */
+		return false;
+		// return !empty($mybbstuff_myalerts_alert_type_manager);
 	}
 	
 	public static function lang_load_myprofile() {
