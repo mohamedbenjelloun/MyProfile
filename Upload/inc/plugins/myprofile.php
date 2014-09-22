@@ -40,7 +40,7 @@ require_once MYBB_ROOT . "inc/plugins/myprofile/myprofilevisitors.class.php";
 function myprofile_info() {
 	return array(
 		"name" => "MyProfile",
-		"description" => "Boosts MyBB's default users profiles with tabs, profile comments, friend system and last visitors.",
+		"description" => "Enhances MyBB's default users profiles with comments, friend system and last visitors.",
 		"website" => "http://community.mybb.com/",
 		"author" => "TheGarfield",
 		"authorsite" => "http://mohamedbenjelloun.com/",
