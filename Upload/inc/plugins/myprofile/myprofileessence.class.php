@@ -67,7 +67,6 @@ class MyProfileEssence {
 		global $mybb, $templates, $settings, $myprofile_headerinclude;
 		$myprofile_headerinclude = "";
 		if(defined("THIS_SCRIPT") && THIS_SCRIPT == "member.php") {
-			$myprofile_tab_effect = $settings["mptabseffect"];
 			/* abortion, we can't ask the global.php to load the following template as the templates class will do that anyway :) */
 			eval("\$myprofile_headerinclude .= \"".$templates->get('myprofile_member_headerinclude')."\";");
 		}

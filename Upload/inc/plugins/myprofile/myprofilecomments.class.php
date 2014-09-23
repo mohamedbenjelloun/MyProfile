@@ -1257,7 +1257,7 @@ if(use_xmlhttprequest == "1")
 		$time = my_date($settings["timeformat"], $comment["time"]);
 		
 		$username = format_name(htmlspecialchars_uni($comment["username"]), $comment["usergroup"], $comment["displaygroup"]);
-		$profile_link = build_profile_link($username, $comment["userid"]);
+		$profile_link = build_profile_link($comment["username"], $comment["userid"]);
 		
 		$message = $this->parse_comment($comment["message"]);
 		

@@ -198,7 +198,7 @@ class MyProfileBuddyList {
 					}
 					else {
 						$td_class = alt_trow();
-						$td_colspan = ($i + 4) - ($i + $j);
+						$td_colspan = 4 - $row;
 						$td_width = $td_colspan * 20;
 						eval("\$row_content .= \"".$templates->get('myprofile_buddylist_spacer')."\";");
 						break;

@@ -207,7 +207,7 @@ class MyProfileVisitors {
 					$lastvisitors_array[] = $username . " ({$date} - {$time})";
 				}
 			}
-			$lastvisitors = implode(", ", $lastvisitors_array);
+			$lastvisitors = implode($lang->comma, $lastvisitors_array);
 		}
 		
 		eval("\$myprofile_visitors .= \"".$templates->get('myprofile_visitors')."\";");
