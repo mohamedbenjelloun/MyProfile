@@ -59,6 +59,7 @@ $plugins->add_hook("member_profile_end", array(MyProfileComments::get_instance()
 
 /* comment notification */
 $plugins->add_hook("global_start", array(MyProfileComments::get_instance(), "global_start"));
+$plugins->add_hook("global_intermediate", array(MyProfileComments::get_instance(), "global_intermediate"));
 
 
 /* A custom MyAlerts Formatter for MyProfile Comments */
@@ -914,7 +915,7 @@ if(use_xmlhttprequest == "1")
 	}
 	
 	public function global_start() {
-		global $mybb, $db, $settings, $lang, $templates, $myprofile_alertbar, $formatterManager, $templatelist;
+		global $mybb, $db, $settings, $lang, $templates, $myprofile_alertbar, $formatterManager, $templatelist, $theme;
 		if(defined('THIS_SCRIPT') && THIS_SCRIPT == "member.php") {
 			/* load our templates */
 			$templatelist .= ",myprofile_comments_content,myprofile_comments_stats,myprofile_comments_form,myprofile_comments_form_modoptions,myprofile_comments_form_script,myprofile_comments_form_status,myprofile_comments_table,myprofile_comments_comment,myprofile_comments_no_comment,myprofile_comments_comment_approve,myprofile_comments_comment_reply,myprofile_comments_comment_edit,myprofile_comments_comment_delete,myprofile_comments_comment_report,multipage_page_current,multipage_page,multipage_nextpage,multipage,codebuttons";
@@ -932,6 +933,16 @@ if(use_xmlhttprequest == "1")
 			}
 		}
 		
+		/* now if the admin has chosen to activate MyAlerts, hook my custom alert formatter classer on global_start */
+		if(in_array($settings["mpcommentsnotification"], array("myalertsoralertbar", "myalerts")) && MyProfileUtils::myalerts_exists() && !empty($formatterManager)) {
+			if(class_exists("MyProfileCommentsMyAlertsFormatter")) {
+				$formatterManager->registerFormatter(new MyProfileCommentsMyAlertsFormatter($mybb, $lang, MyProfileCommentsMyAlertsFormatter::alert_type_code()));
+			}
+		}
+	}
+	
+	public function global_intermediate() {
+		global $mybb, $db, $settings, $lang, $templates, $myprofile_alertbar, $formatterManager, $templatelist, $theme;
 		/* did the user choose to see notification? and is the notification system "MyAlerts or alert bar" or "Alert bar"? and does the user have new comments */
 		if($mybb->user["uid"] > 0 && $mybb->user["mpcommentnotification"] == "1" && $mybb->user["mpnewcomments"] > 0 && in_array($settings["mpcommentsnotification"], array("myalertsoralertbar", "alertbar"))) {
 			/* we will only keep going on if the admin selected "Alert bar" / "MyAlerts or Alert bar" and MyAlerts isn't installed */
@@ -940,13 +951,6 @@ if(use_xmlhttprequest == "1")
 				MyProfileUtils::lang_load_myprofile();
 				$comments_text = $lang->sprintf($lang->mp_comments_new_comments, "<a href=\"{$settings['bburl']}/member.php?action=profile&uid={$mybb->user['uid']}\">", $mybb->user["mpnewcomments"], "</a>");
 				eval("\$myprofile_alertbar .= \"".$templates->get("myprofile_comments_alertbar")."\";");
-			}
-		}
-		
-		/* now if the admin has chosen to activate MyAlerts, hook my custom alert formatter classer on global_start */
-		if(in_array($settings["mpcommentsnotification"], array("myalertsoralertbar", "myalerts")) && MyProfileUtils::myalerts_exists() && !empty($formatterManager)) {
-			if(class_exists("MyProfileCommentsMyAlertsFormatter")) {
-				$formatterManager->registerFormatter(new MyProfileCommentsMyAlertsFormatter($mybb, $lang, MyProfileCommentsMyAlertsFormatter::alert_type_code()));
 			}
 		}
 	}
