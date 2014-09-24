@@ -43,10 +43,10 @@ while($comment = $db->fetch_array($commentquery))
     $newcomment = array(
     "userid" => (int)$comment['user'],
     "cuid" => (int)$comment['sender'],
-    "message" => $db->escape_string($comment['message']),
+    "message" => $db->escape_string($comment['text']),
     "approved" => 1,
     "isprivate" => 0,
-    "dateline" => (int)$comment['date']
+    "time" => (int)$comment['date']
     );
     $db->insert_query("myprofilecomments", $newcomment);
     ++$commentsinserted;
