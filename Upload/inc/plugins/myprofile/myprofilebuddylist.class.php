@@ -34,6 +34,9 @@ if(!defined("IN_MYBB"))
 $plugins->add_hook("global_start", array(MyProfileBuddyList::get_instance(), "global_start"));
 $plugins->add_hook("member_profile_end", array(MyProfileBuddyList::get_instance(), "member_profile_end"));
 
+/* version 0.5 */
+$plugins->add_hook("xmlhttp", array(MyProfileBuddyList::get_instance(), "xmlhttp"));
+
 class MyProfileBuddyList {
 	
 	private static $instance = null;
@@ -94,19 +97,22 @@ class MyProfileBuddyList {
 	public function activate() {
 		require_once MYBB_ROOT . "inc/adminfunctions_templates.php";
 		$templates = array();
-		$templates["myprofile_buddylist"] = '<br /><table width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
+		$templates["myprofile_buddylist"] = '<div class="buddylist-content"><br /><table width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
 <tr>
 <td width="100%" valign="top">
 <table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
 <tr>
 <td colspan="4" class="thead"><strong>{$lang->mp_profile_buddylist} ({$lang->mp_profile_comments_total} {$count})</strong></td>
 </tr>
+<tr class="buddylist-pagination">
+<td colspan="2" {$buddylist_pagination_style}>{$buddylist_pagination}</td>
+</tr>
 {$buddylist_count}
 {$buddylist_content}
 </table>
 </td>
 </tr>
-</table>';
+</table></div>';
 
 		$templates["myprofile_buddylist_buddy_count"] = '<tr>
 <td class="trow1" colspan="{$count_colspan}">{$count_friends_text}</td>
@@ -157,25 +163,62 @@ class MyProfileBuddyList {
 		}
 	}
 	
-	public function member_profile_end() {
-		global $lang, $templates, $db, $memprofile, $settings, $mybb, $count, $myprofile_buddylist, $theme;
+	public function xmlhttp() {
+		global $mybb;
+		if(isset($mybb->input["action"]) && is_string($mybb->input["action"])) {
+			switch($mybb->input["action"]) {
+				case "buddylist-load-page" :
+					$this->xmlhttp_buddylist_page();
+				break;
+				default :
+					return;
+				break;
+			}
+		}
+	}
+	
+	public function xmlhttp_buddylist_page() {
+		global $mybb;
 		
-		MyProfileUtils::lang_load_myprofile();
+		$object = new stdClass();
+		$object->error = false;
+		$object->error_message = "";
 		
+		$page = isset($mybb->input["page"]) && is_numeric($mybb->input["page"]) && $mybb->input["page"] >= 1 ? (int) $mybb->input["page"] : 1;
+		$memberuid = (int) $mybb->input["memberuid"];
+		$memprofile = get_user($memberuid);
+		
+		list($object->html, $object->count, $object->shown) = array_values($this->retrieve_buddylist_from_db($page, $memprofile));
+		MyProfileUtils::output_json($object);
+		
+	}
+	
+	public function retrieve_buddylist_from_db($page, $memprofile) {
+		global $db, $settings;
+		$page = (int) $page;
 		$buddylist = array();
-		$count = 0;
-		
-		if(my_strlen(trim($memprofile["buddylist"])) != 0) {
-			$limit = is_numeric($settings["mpbuddylistrecord"]) ? (int) $settings["mpbuddylistrecord"] : 4;
-			$query = $db->simple_select("users", "*", "uid IN ({$memprofile['buddylist']})", array("limit" => $limit));
+		$count = count(explode(",", $memprofile["buddylist"]));
+		$limit = is_numeric($settings["mpbuddylistrecord"]) ? (int) $settings["mpbuddylistrecord"] : 4;
+		$membuddylistarray = array_slice(explode(",", $memprofile["buddylist"]), ($page - 1) * $limit, $limit);
+		$membuddylist = implode(",", $membuddylistarray);
+		if(my_strlen(trim($membuddylist)) != 0) {
+			//var_dump($membuddylist);exit;
+			$query = $db->simple_select("users", "*", "uid IN ({$membuddylist})", array("limit" => $limit));
+			
 			while($buddy = $db->fetch_array($query)) {
 				$buddylist[] = $buddy;
 			}
-			/* update the counter */
-			$query = $db->simple_select("users", "COUNT(*) as rows", "uid IN ({$memprofile['buddylist']})");
-			$count = $db->fetch_field($query, "rows");
+			/* saving up a query */
 		}
 		
+		return $this->buddylist_process($buddylist, $count, $memprofile, $limit, $page);
+	}
+	
+	/* wow, this really needs a v2 */
+	public function buddylist_process($buddylist, $count, $memprofile, $limit, $page) {
+		global $lang, $templates, $settings, $mybb, $theme;
+		
+		MyProfileUtils::lang_load_myprofile();
 		if(count($buddylist) == 0) {
 			/* show them we've got no friends :( */
 			$count_friends_text = $lang->sprintf($lang->mp_buddylist_no_friend, $memprofile["username"]);
@@ -208,8 +251,18 @@ class MyProfileBuddyList {
 			}
 		}
 		
+		$buddylist_pagination = multipage($count, $limit, $page, "javascript:MyProfile.buddylistLoadPage({page});");
+		if($buddylist_pagination == null) {
+			$buddylist_pagination_style = 'style="display: none;"';
+		}
 		eval("\$buddylist_count .= \"".$templates->get('myprofile_buddylist_buddy_count')."\";");
-		eval("\$myprofile_buddylist .= \"".$templates->get('myprofile_buddylist')."\";");
+		eval("\$myprofile_buddylist .= \"".$templates->get('myprofile_buddylist', 1, 0)."\";");
+		return array("html" => $myprofile_buddylist, "count" => $count, "shown" => count($buddylist));
+	}
+	
+	public function member_profile_end() {
+		global $memprofile, $myprofile_buddylist;
+		list($myprofile_buddylist,,) = array_values($this->retrieve_buddylist_from_db(1, $memprofile));
 	}
 	
 	private function __construct() {

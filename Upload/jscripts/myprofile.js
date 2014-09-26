@@ -340,7 +340,29 @@ var MyProfile = {
                 $("td[data-cid='" + parseInt(parts[3]) + "']").addClass("trow_selected");
             }
         }
-    }
+    },
+	buddylistLoadPage: function(page) {
+		$.ajax({
+			"url" : "xmlhttp.php?action=buddylist-load-page",
+			"type" : "GET",
+			"data" : {
+				"my_post_key" : my_post_key,
+				"page" : page,
+				"memberuid" : MyProfile.memberUid
+			},
+			"dataType" : "json",
+			"success": function(obj) {
+				if(! obj.error) {
+					if(obj.shown == 0 && obj.count > 0) {
+						MyProfile.buddylistLoadPage(1);
+					}
+					else {
+						$(".buddylist-content").replaceWith(obj.html);
+					}
+				}
+			}
+		});
+	}
 };
 
 $(document).ready(function() {
