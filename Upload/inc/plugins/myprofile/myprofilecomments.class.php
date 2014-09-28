@@ -1348,7 +1348,7 @@ if(use_xmlhttprequest == "1")
 		/* check flood time ? */
 		if(! $ignore_flood && $settings["mpcommentstimeflood"] > "0") {
 			$flood_time = TIME_NOW - $settings["mpcommentstimeflood"];
-			$query = $db->simple_select("myprofilecomments", "`time`", "cuid = '{$mybb->user["uid"]}' AND `time` > {$flood_time}", array("limit" => 1), true);
+			$query = $db->simple_select("myprofilecomments", "`time`", "cuid = '{$mybb->user["uid"]}' AND `time` > {$flood_time}", array("limit" => 1));
 			if($db->num_rows($query) > 0) {
 				$time = $db->fetch_field($query, "time");
 				$seconds = $time - $flood_time;
