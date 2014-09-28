@@ -209,6 +209,9 @@ none={$lang->mp_myprofile_comments_notification_none}",
 			"title" => $lang->mp_myprofile_comments_perpage,
 			"description" => $lang->mp_myprofile_comments_perpage_desc,
 			"optionscode" => "select
+2=2
+3=3
+4=4
 5=5
 6=6
 7=7
@@ -217,8 +220,7 @@ none={$lang->mp_myprofile_comments_notification_none}",
 10=10
 15=15
 25=25
-30=30
-	",
+30=30",
 			"value" => "10",
 			"gid" => $gid
 		);
@@ -1257,7 +1259,7 @@ if(use_xmlhttprequest == "1")
 		$time = my_date($settings["timeformat"], $comment["time"]);
 		
 		$username = format_name(htmlspecialchars_uni($comment["username"]), $comment["usergroup"], $comment["displaygroup"]);
-		$profile_link = build_profile_link($comment["username"], $comment["userid"]);
+		$profile_link = build_profile_link($username, $comment["cuid"]);
 		
 		$message = $this->parse_comment($comment["message"]);
 		

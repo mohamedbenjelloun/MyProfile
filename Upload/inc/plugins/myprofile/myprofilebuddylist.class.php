@@ -184,13 +184,22 @@ class MyProfileBuddyList {
 		$object->error = false;
 		$object->error_message = "";
 		
+		if(! isset($mybb->input["my_post_key"], $mybb->input["memberuid"]) || ! is_string($mybb->input["my_post_key"]) || ! verify_post_check($mybb->input["my_post_key"], true)
+			|| ! is_numeric($mybb->input["memberuid"])) {
+			return;
+		}
+		
+		
 		$page = isset($mybb->input["page"]) && is_numeric($mybb->input["page"]) && $mybb->input["page"] >= 1 ? (int) $mybb->input["page"] : 1;
 		$memberuid = (int) $mybb->input["memberuid"];
 		$memprofile = get_user($memberuid);
 		
+		if(empty($memprofile)) {
+			return;
+		}
+		
 		list($object->html, $object->count, $object->shown) = array_values($this->retrieve_buddylist_from_db($page, $memprofile));
 		MyProfileUtils::output_json($object);
-		
 	}
 	
 	public function retrieve_buddylist_from_db($page, $memprofile) {

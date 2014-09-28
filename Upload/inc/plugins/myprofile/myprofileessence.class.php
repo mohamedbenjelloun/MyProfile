@@ -35,6 +35,18 @@ $plugins->add_hook("global_start", array(MyProfileEssence::get_instance(), "glob
 class MyProfileEssence {
 	
 	private static $instance = null;
+	/* starting from version 0.5, we introduce a cache to know which version we are currently using, makes it easy to upgrade */
+	public function install() {
+		global $cache;
+		$myprofile_info = myprofile_info();
+		$myprofile_cache = array("version" => $myprofile_info["version"]);
+		$cache->update("myprofile", $myprofile_cache);
+	}
+	
+	public function uninstall() {
+		global $cache;
+		$cache->delete("myprofile");
+	}
 	
 	public function activate() {
 		global $db, $lang;
@@ -43,7 +55,7 @@ class MyProfileEssence {
 		$templates = array();
 		
 		$templates["myprofile_member_headerinclude"] = '<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1800"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/myprofile.js?ver=0500"></script>';
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/myprofile.js?ver=1800"></script>';
 		
 		MyProfileUtils::insert_templates($templates);
 		

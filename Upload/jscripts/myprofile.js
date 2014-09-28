@@ -12,7 +12,7 @@
  * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
-
+ 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -44,7 +44,7 @@ var MyProfile = {
         /* report buttons are always hooked either way */
         $(document).on("click", "button.comments-report", MyProfile.commentsReport)
                 .on("submit", "form#comments-edit-form", MyProfile.commentsEditSubmit)
-				.on("click", "button.comments-delete-all", MyProfile.commentsDeleteAll)
+                .on("click", "button.comments-delete-all", MyProfile.commentsDeleteAll)
                 .on("click", "button.comments-edit", MyProfile.commentsEdit);
         if (!this.ajax) {
             return;
@@ -174,8 +174,8 @@ var MyProfile = {
             },
             "dataType": "json",
             "success": function(obj) {
-                if (! obj.error) {
-					instance.val("");
+                if (!obj.error) {
+                    instance.val("");
                     MyProfile.commentsRetrieve(1);
                 }
                 else {
@@ -231,16 +231,16 @@ var MyProfile = {
             },
             "success": function(obj) {
                 if (!obj.error) {
-					if(MyProfile.ajax) {
-						MyProfile.commentsRetrieve(1);
-					}
-					else {
-						window.location.href = rootpath + "/misc.php?action=comments-delete-all&memberuid=" + MyProfile.memberUid + "&my_post_key=" + my_post_key;
-					}
+                    if (MyProfile.ajax) {
+                        MyProfile.commentsRetrieve(1);
+                    }
+                    else {
+                        window.location.href = rootpath + "/misc.php?action=comments-delete-all&memberuid=" + MyProfile.memberUid + "&my_post_key=" + my_post_key;
+                    }
                 }
-				else {
-					alert(obj.error_message);
-				}
+                else {
+                    alert(obj.error_message);
+                }
             }
         });
     },
@@ -341,28 +341,28 @@ var MyProfile = {
             }
         }
     },
-	buddylistLoadPage: function(page) {
-		$.ajax({
-			"url" : "xmlhttp.php?action=buddylist-load-page",
-			"type" : "GET",
-			"data" : {
-				"my_post_key" : my_post_key,
-				"page" : page,
-				"memberuid" : MyProfile.memberUid
-			},
-			"dataType" : "json",
-			"success": function(obj) {
-				if(! obj.error) {
-					if(obj.shown == 0 && obj.count > 0) {
-						MyProfile.buddylistLoadPage(1);
-					}
-					else {
-						$(".buddylist-content").replaceWith(obj.html);
-					}
-				}
-			}
-		});
-	}
+    buddylistLoadPage: function(page) {
+        $.ajax({
+            "url": "xmlhttp.php?action=buddylist-load-page",
+            "type": "GET",
+            "data": {
+                "my_post_key": my_post_key,
+                "page": page,
+                "memberuid": MyProfile.memberUid
+            },
+            "dataType": "json",
+            "success": function(obj) {
+                if (!obj.error) {
+                    if (obj.shown == 0 && obj.count > 0) {
+                        MyProfile.buddylistLoadPage(1);
+                    }
+                    else {
+                        $(".buddylist-content").replaceWith(obj.html);
+                    }
+                }
+            }
+        });
+    }
 };
 
 $(document).ready(function() {
