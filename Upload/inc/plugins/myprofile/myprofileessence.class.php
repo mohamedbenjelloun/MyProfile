@@ -54,8 +54,7 @@ class MyProfileEssence {
 
 		$templates = array();
 		
-		$templates["myprofile_member_headerinclude"] = '<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1800"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/myprofile.js?ver=1800"></script>';
+		$templates["myprofile_member_headerinclude"] = '<script type="text/javascript" src="{$mybb->asset_url}/jscripts/myprofile.js?ver=1800"></script>';
 		
 		MyProfileUtils::insert_templates($templates);
 		
