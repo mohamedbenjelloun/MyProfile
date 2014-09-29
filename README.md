@@ -9,7 +9,7 @@ __Bundles up to now :__
 - Buddy List
 
 
-__Future bundles in mind :__
+__Future bundles :__
 - Profile Gallery
 
 
