@@ -164,7 +164,10 @@ class MyProfileBuddyList {
 	}
 	
 	public function xmlhttp() {
-		global $mybb;
+		global $mybb, $settings;
+		if($settings["mpbuddylistenabled"] != "1") {
+			return;
+		}
 		if(isset($mybb->input["action"]) && is_string($mybb->input["action"])) {
 			switch($mybb->input["action"]) {
 				case "buddylist-load-page" :
@@ -211,7 +214,6 @@ class MyProfileBuddyList {
 		$membuddylistarray = array_slice(explode(",", $memprofile["buddylist"]), ($page - 1) * $limit, $limit);
 		$membuddylist = implode(",", $membuddylistarray);
 		if(my_strlen(trim($membuddylist)) != 0) {
-			//var_dump($membuddylist);exit;
 			$query = $db->simple_select("users", "*", "uid IN ({$membuddylist})", array("limit" => $limit));
 			
 			while($buddy = $db->fetch_array($query)) {
@@ -270,7 +272,10 @@ class MyProfileBuddyList {
 	}
 	
 	public function member_profile_end() {
-		global $memprofile, $myprofile_buddylist;
+		global $memprofile, $myprofile_buddylist, $settings;
+		if($settings["mpbuddylistenabled"] != "1") {
+			return;
+		}
 		list($myprofile_buddylist,,) = array_values($this->retrieve_buddylist_from_db(1, $memprofile));
 	}
 	
