@@ -522,6 +522,12 @@ none={$lang->mp_myprofile_comments_notification_none}",
 lang.mp_comments_comment_wrong_length = "{$lang->mp_comments_comment_wrong_length}";
 lang.mp_comments_confirm_delete = "{$lang->mp_comments_confirm_delete}";
 lang.mp_comments_confirm_delete_all = "{$lang->mp_comments_confirm_delete_all}";
+lang.mp_comments_comment_approved_successfully = "{$lang->mp_comments_comment_approved_successfully}";
+lang.mp_comments_comment_added_successfully = "{$lang->mp_comments_comment_added_successfully}";
+lang.mp_comments_comment_deleted_successfully = "{$lang->mp_comments_comment_deleted_successfully}";
+lang.mp_comments_comments_deleted_successfully = "{$lang->mp_comments_comments_deleted_successfully}";
+lang.mp_comments_comment_edited_successfully = "{$lang->mp_comments_comment_edited_successfully}";
+
 MyProfile.memberUid = {$comments_memberuid};
 MyProfile.ajax = {$comments_ajax};
 MyProfile.commentsMinLength = {$comments_minlength};

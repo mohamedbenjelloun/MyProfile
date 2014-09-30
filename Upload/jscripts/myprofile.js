@@ -141,9 +141,10 @@ var MyProfile = {
             "success": function(obj) {
                 if (!obj.error) {
                     MyProfile.commentsRetrieve();
+					MyProfile.notify(lang.mp_comments_comment_approved_successfully);
                 }
                 else {
-                    alert(obj.error_message);
+                    MyProfile.notify(obj.error_message);
                 }
             }
         });
@@ -159,7 +160,7 @@ var MyProfile = {
             instance = $("#message");
         }
         if (instance.val().length < MyProfile.commentsMinLength || instance.val().length > MyProfile.commentsMaxLength) {
-            alert(MyProfile.sprintf(lang.mp_comments_comment_wrong_length, MyProfile.commentsMinLength, MyProfile.commentsMaxLength));
+            MyProfile.notify(MyProfile.sprintf(lang.mp_comments_comment_wrong_length, MyProfile.commentsMinLength, MyProfile.commentsMaxLength));
             return;
         }
         var isprivate = $("select.select-comments-add[name='isprivate']").length === 1 ? $("select.select-comments-add[name='isprivate']").val() : 0;
@@ -177,9 +178,10 @@ var MyProfile = {
                 if (!obj.error) {
                     instance.val("");
                     MyProfile.commentsRetrieve(1);
+					MyProfile.notify(lang.mp_comments_comment_added_successfully);
                 }
                 else {
-                    alert(obj.error_message);
+                    MyProfile.notify(obj.error_message);
                 }
             }
         });
@@ -209,9 +211,10 @@ var MyProfile = {
             "success": function(obj) {
                 if (!obj.error) {
                     MyProfile.commentsRetrieve();
+					MyProfile.notify(lang.mp_comments_comment_deleted_successfully);
                 }
                 else {
-                    alert(obj.error_message);
+                    MyProfile.notify(obj.error_message);
                 }
             }
         });
@@ -233,13 +236,14 @@ var MyProfile = {
                 if (!obj.error) {
                     if (MyProfile.ajax) {
                         MyProfile.commentsRetrieve(1);
+						MyProfile.notify(lang.mp_comments_comments_deleted_successfully);
                     }
                     else {
                         window.location.href = rootpath + "/misc.php?action=comments-delete-all&memberuid=" + MyProfile.memberUid + "&my_post_key=" + my_post_key;
                     }
                 }
                 else {
-                    alert(obj.error_message);
+                    MyProfile.notify(obj.error_message);
                 }
             }
         });
@@ -261,7 +265,7 @@ var MyProfile = {
                         });
                     });
         }).fail(function(obj) {
-            obj.responseText && alert(obj.responseText);
+            obj.responseText && MyProfile.notify(obj.responseText);
         });
     },
     commentsEditSubmit: function(event) {
@@ -273,7 +277,7 @@ var MyProfile = {
             instance = $("#message_edit");
         }
         if (instance.val().length < MyProfile.commentsMinLength || instance.val().length > MyProfile.commentsMaxLength) {
-            alert(MyProfile.sprintf(lang.mp_comments_comment_wrong_length, MyProfile.commentsMinLength, MyProfile.commentsMaxLength));
+            MyProfile.notify(MyProfile.sprintf(lang.mp_comments_comment_wrong_length, MyProfile.commentsMinLength, MyProfile.commentsMaxLength));
             return;
         }
         var cid = $("input.comments-edit-submit").attr("data-cid");
@@ -295,13 +299,14 @@ var MyProfile = {
                         MyProfile.commentsRetrieve();
                         instance.val("");
                         MyProfile.closeCurrentModal();
+						MyProfile.notify(lang.mp_comments_comment_edited_successfully);
                     }
                     else {
                         window.location.href = rootpath + "/misc.php?action=comments-do-edit&page=" + MyProfile.commentsPage + "&memberuid=" + MyProfile.memberUid + "&my_post_key=" + my_post_key;
                     }
                 }
                 else {
-                    alert(obj.error_message);
+                    MyProfile.notify(obj.error_message);
                     MyProfile.closeCurrentModal();
                 }
             }
@@ -362,7 +367,15 @@ var MyProfile = {
                 }
             }
         });
-    }
+    },
+	notify: function(message) {
+		if(typeof $.jGrowl === 'function') {
+			$.jGrowl(message);
+		}
+		else {
+			alert(message);
+		}
+	}
 };
 
 $(document).ready(function() {
