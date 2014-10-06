@@ -9,8 +9,8 @@ __Bundles up to now :__
 - Buddy List
 
 
-__Future bundles :__
-- Profile Gallery
+__Desired bundles :__
+- Profile Gallery : Would this be necessary?
 
 
 __Abandoned bundles :__
