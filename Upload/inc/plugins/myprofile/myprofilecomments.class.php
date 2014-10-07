@@ -99,6 +99,26 @@ class MyProfileComments {
 	
 	private static $instance = null;
 	
+	/* upgrading from version 0.3 */
+	public function upgrade_0_3() {
+		global $db;
+		$update_array = array("optionscode" => "select
+2=2
+3=3
+4=4
+5=5
+6=6
+7=7
+8=8
+9=9
+10=10
+15=15
+25=25
+30=30");
+		$db->update_query("settings", $update_array, "name='mpcommentsperpage'", "1");
+		rebuild_settings();
+	}
+	
 	public function install() {
 		global $db, $cache, $lang, $mybbstuff_myalerts_alert_type_manager;
 		MyProfileUtils::lang_load_config_myprofile();
@@ -593,26 +613,26 @@ MyProfile.commentsPage = {$comments_page};
 <input type="hidden" name="action" value="comments-approve" />
 <input type="hidden" name="cid" value="{$comment[\'cid\']}" />
 <input type="hidden" name="memberuid" value="{$comment[\'userid\']}" />
-<button class="comments-approve comments-action button">{$lang->mp_comments_action_approve}</button>
+<button class="comments-approve comments-action button" style="font-size: 11px;">{$lang->mp_comments_action_approve}</button>
 </form>';
 
 		$templates["myprofile_comments_comment_reply"] = '<form action="{$mybb->settings[\'bburl\']}/member.php" method="get" style="display: inline;">
 <input type="hidden" name="action" value="profile" />
 <input type="hidden" name="uid" value="{$commentor_uid}" />
-<button>{$lang->mp_comments_action_reply}</button>
+<button style="font-size: 11px;">{$lang->mp_comments_action_reply}</button>
 </form>';
 		
-		$templates["myprofile_comments_comment_edit"] = '<button class="comments-edit comments-action button">{$lang->mp_comments_action_edit}</button>';
+		$templates["myprofile_comments_comment_edit"] = '<button class="comments-edit comments-action button" style="font-size: 11px;">{$lang->mp_comments_action_edit}</button>';
 		
 		$templates["myprofile_comments_comment_delete"] = '<form action="misc.php" method="post" style="display: inline;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="comments-delete" />
 <input type="hidden" name="cid" value="{$comment[\'cid\']}" />
 <input type="hidden" name="memberuid" value="{$comment[\'userid\']}" />
-<button class="comments-delete comments-action button">{$lang->mp_comments_action_delete}</button>
+<button class="comments-delete comments-action button" style="font-size: 11px;">{$lang->mp_comments_action_delete}</button>
 </form>';
 		
-		$templates["myprofile_comments_comment_report"] = '<button class="comments-report comments-action button">{$lang->mp_comments_action_report}</button>';
+		$templates["myprofile_comments_comment_report"] = '<button class="comments-report comments-action button" style="font-size: 11px;">{$lang->mp_comments_action_report}</button>';
 		
 		$templates["myprofile_comments_report_reasons"] = '<tr>
 <td class="trow1" align="left" style="width: 25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
@@ -1688,19 +1708,12 @@ if(use_xmlhttprequest == "1")
 		if(! isset($mybb->input["action"]) || ! is_string($mybb->input["action"])) {
 			return;
 		}
-		if($mybb->input["action"] == "comments-edit") {
-			$this->misc_comments_edit();
-			return;
-		}
-		if($mybb->input["action"] == "comments-do-edit") {
-			$this->misc_comments_do_edit();
-			return;
-		}
 		/* is ajax activated? */
+		/* version 0.5 - removing this restriction 
 		if($settings["mpcommentsajaxenabled"] != "0") {
 			return;
 		}
-		
+		*/
 		switch($mybb->input["action"]) {
 			case "comments-add" :
 				$this->misc_comments_add();
@@ -1713,6 +1726,12 @@ if(use_xmlhttprequest == "1")
 			break;
 			case "comments-approve" :
 				$this->misc_comments_approve();
+			break;
+			case "comments-edit" :
+				$this->misc_comments_edit();
+			break;
+			case "comments-do-edit" :
+				$this->misc_comments_do_edit();
 			break;
 			default :
 				return; /* again, no need to break after a return but I'm a paranoid */

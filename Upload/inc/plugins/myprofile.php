@@ -44,15 +44,20 @@ function myprofile_info() {
 		"website" => "http://community.mybb.com/",
 		"author" => "TheGarfield",
 		"authorsite" => "http://mohamedbenjelloun.com/",
-		"version" => "0.3",
+		"version" => "0.5",
 		"compatibility" => "18*",
 		"guid" => "", // bye bye 1.6 :D
 		"codename" => "myprofile"
     );
 }
 
+/* starting version 0.5, we add a cache that handles versionning */
 function myprofile_install() {
+	global $cache;
 	myprofile_bundles_propagate_call("install");
+	$info = myprofile_info();
+	$myprofile_cache = array("version" => $info["version"]);
+	$cache->update("myprofile", $myprofile_cache);
 }
 
 function myprofile_is_installed() {
@@ -66,10 +71,34 @@ function myprofile_is_installed() {
 }
 
 function myprofile_uninstall() {
+	global $cache;
 	myprofile_bundles_propagate_call("uninstall");
+	$cache->delete("myprofile");
 }
 
 function myprofile_activate() {
+	global $cache;
+	/* before activating, if we were running on an old version, update */
+	$info = myprofile_info();
+	$myprofile_cache = $cache->read("myprofile");
+	if($myprofile_cache == null || ! isset($myprofile_cache["version"])) {
+		/* lucky us, only version 0.3 doesn't have a version cache */
+		$version = "0.3";
+		$myprofile_cache = array();
+	}
+	else {
+		$version = $myprofile_cache["version"];
+	}
+	if($version != $info["version"]) {
+		/* newer version, call methods that will upgrade from the older version to the new one */
+		$version = str_replace(".", "_", trim($version));
+		myprofile_bundles_propagate_call("upgrade_" . $version);
+		/* update the cache now that the upgrade has been done */
+		$myprofile_cache["version"] = $info["version"];
+		$cache->update("myprofile", $myprofile_cache);
+	}
+	
+	/* activate bundles */
 	myprofile_bundles_propagate_call("activate");
 }
 

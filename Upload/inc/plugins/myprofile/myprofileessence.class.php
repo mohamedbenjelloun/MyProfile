@@ -35,26 +35,16 @@ $plugins->add_hook("global_start", array(MyProfileEssence::get_instance(), "glob
 class MyProfileEssence {
 	
 	private static $instance = null;
-	/* starting from version 0.5, we introduce a cache to know which version we are currently using, makes it easy to upgrade */
-	public function install() {
-		global $cache;
-		$myprofile_info = myprofile_info();
-		$myprofile_cache = array("version" => $myprofile_info["version"]);
-		$cache->update("myprofile", $myprofile_cache);
-	}
-	
-	public function uninstall() {
-		global $cache;
-		$cache->delete("myprofile");
-	}
 	
 	public function activate() {
-		global $db, $lang;
+		global $db, $lang, $cache;
 		require_once MYBB_ROOT . "inc/adminfunctions_templates.php";
 
 		$templates = array();
-		
-		$templates["myprofile_member_headerinclude"] = '<script type="text/javascript" src="{$mybb->asset_url}/jscripts/myprofile.js?ver=1800"></script>';
+		$myprofile_cache = $cache->read("myprofile");
+		$ver = str_replace(".", "_", trim($myprofile_cache["version"]));
+		/* we're allowed to hard write the version inside the template, it will be updated every time there's a new version */
+		$templates["myprofile_member_headerinclude"] = '<script type="text/javascript" src="{$mybb->asset_url}/jscripts/myprofile.js?ver=' . $ver . '"></script>';
 		
 		MyProfileUtils::insert_templates($templates);
 		
@@ -72,13 +62,12 @@ class MyProfileEssence {
 	}
 	
 	/**
-	 * Adds myprofile.js
+	 * Adds myprofile.js, myprofile.css
 	 */
 	public function global_start() {
 		global $mybb, $templates, $settings, $myprofile_headerinclude;
 		$myprofile_headerinclude = "";
 		if(defined("THIS_SCRIPT") && THIS_SCRIPT == "member.php") {
-			/* abortion, we can't ask the global.php to load the following template as the templates class will do that anyway :) */
 			eval("\$myprofile_headerinclude .= \"".$templates->get('myprofile_member_headerinclude')."\";");
 		}
 	}
