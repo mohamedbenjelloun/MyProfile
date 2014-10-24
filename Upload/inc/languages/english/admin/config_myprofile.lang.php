@@ -108,3 +108,10 @@ $l['mp_options_can_manage_comments'] = "Can manage comments? (Can edit and delet
 $l['mp_options_can_send_comments'] = "Can send comments?";
 $l['mp_options_can_edit_own_comments'] = "Can edit own comments?";
 $l['mp_options_can_delete_own_comments'] = "Can delete own comments?";
+
+// Permission Viewer stuff
+$l['mp_options_can_use_image_background'] = "Can use image background?";
+$l['mp_options_canmanagecomments'] = "Can manage comments? (Can edit and delete all comments)";
+$l['mp_options_cansendcomments'] = "Can send comments?";
+$l['mp_options_caneditowncomments'] = "Can edit own comments?";
+$l['mp_options_candeleteowncomments'] = "Can delete own comments?";
