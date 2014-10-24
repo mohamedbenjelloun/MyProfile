@@ -130,7 +130,7 @@ class MyProfileComments {
 				`cid` int unsigned NOT NULL auto_increment,
 				`userid` int unsigned NOT NULL,
 				`cuid` int unsigned NOT NULL,
-				`message` text NOT NULL default '',
+				`message` text NOT NULL,
 				`approved` int(1) NOT NULL default '0',
 				`isprivate` int(1) NOT NULL default '0',
 				`time` varchar(10) NOT NULL,
