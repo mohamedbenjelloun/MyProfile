@@ -48,6 +48,8 @@ function myprofile_info() {
 		"version" => "0.5",
 		"compatibility" => "18*",
 		"guid" => "", // bye bye 1.6 :D
+		"language_file" => "config_myprofile",
+		"language_prefix" => "mp_options_",
 		"codename" => "myprofile"
     );
 }
