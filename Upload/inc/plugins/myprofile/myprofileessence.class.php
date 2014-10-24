@@ -31,6 +31,7 @@ if(!defined("IN_MYBB"))
 }
 
 $plugins->add_hook("global_start", array(MyProfileEssence::get_instance(), "global_start"));
+$plugins->add_hook("global_intermediate", array(MyProfileEssence::get_instance(), "global_intermediate"));
 
 class MyProfileEssence {
 	
@@ -65,9 +66,17 @@ class MyProfileEssence {
 	 * Adds myprofile.js, myprofile.css
 	 */
 	public function global_start() {
-		global $mybb, $templates, $settings, $myprofile_headerinclude;
+		global $templates,  $myprofile_headerinclude, $templatelist;
 		$myprofile_headerinclude = "";
 		if(defined("THIS_SCRIPT") && THIS_SCRIPT == "member.php") {
+			$templatelist .= ",myprofile_member_headerincluder";
+		}
+	}
+	
+	public function global_intermediate() {
+		global $templates, $myprofile_headerinclude;
+		if(THIS_SCRIPT == "member.php")
+		{
 			eval("\$myprofile_headerinclude .= \"".$templates->get('myprofile_member_headerinclude')."\";");
 		}
 	}
