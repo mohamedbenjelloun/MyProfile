@@ -71,9 +71,32 @@ function myprofile_is_installed() {
 }
 
 function myprofile_uninstall() {
-	global $cache;
-	myprofile_bundles_propagate_call("uninstall");
-	$cache->delete("myprofile");
+	global $mybb;
+
+	if($mybb->request_method == 'post')
+	{
+		if(!verify_post_check($mybb->input['my_post_key']))
+		{
+			global $lang;
+
+			flash_message($lang->invalid_post_verify_key2, 'error');
+			admin_redirect("index.php?module=config-plugins");
+		}
+
+		if(isset($mybb->input['no']))
+		{
+			admin_redirect('index.php?module=config-plugins');
+		}
+
+		myprofile_bundles_propagate_call("uninstall");
+		$mybb->cache->delete("myprofile");
+
+		return true;
+	}
+
+	global $page;
+
+	$page->output_confirm_action("index.php?module=config-plugins&action=deactivate&uninstall=1&plugin=myprofile");
 }
 
 function myprofile_activate() {
