@@ -93,6 +93,15 @@ $l['mp_myprofile_buddylist_record_desc'] = "Select the number of buddies you wan
 $l['mp_myprofile_buddylist_avatar_max_dimensions'] = "Avatar Maximum Dimensions";
 $l['mp_myprofile_buddylist_avatar_max_dimensions_desc'] = "Set the maximum avatar dimensions, in the form <b>HEIGHTxWIDTH</b>, where HEIGHT and WIDTH are respectively the maximum height and width of the avatar.";
 
+
+//// permissions
+$l['mp_myprofile_permissions'] = "MyProfile Permissions";
+$l['mp_myprofile_permissions_desc'] = "Enables your users to decide who can view their profiles.";
+$l['mp_myprofile_permissions_enabled'] = "MyProfile Permissions Enabled";
+$l['mp_myprofile_permissions_enabled_desc'] = "Set to Yes if you want to enable permission system on users profiles, or No to disable it.";
+$l['mp_myprofile_permissions_groups'] = "MyProfile Allowed Groups";
+$l['mp_myprofile_permissions_groups_desc'] = "Select the groups that can set their profile permission.";
+
 // acp
 $l['mp_options_can_use_image_background'] = "Can use image background?";
 $l['mp_options_can_manage_comments'] = "Can manage comments? (Can edit and delete all comments)";
