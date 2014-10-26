@@ -74,7 +74,7 @@ class MyProfileEssence {
 	}
 	
 	public function global_intermediate() {
-		global $templates, $myprofile_headerinclude;
+		global $templates, $myprofile_headerinclude, $mybb;
 		if(THIS_SCRIPT == "member.php")
 		{
 			eval("\$myprofile_headerinclude .= \"".$templates->get('myprofile_member_headerinclude')."\";");
