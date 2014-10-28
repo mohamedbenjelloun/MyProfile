@@ -53,6 +53,7 @@ $l['mp_profile_visitors_no_visit'] = "Not visited yet.";
 $l['mp_profile_buddylist'] = "Buddy List";
 $l['mp_profile_comments_comments'] = "Comments";
 $l['mp_profile_comments_total'] = "Total";
+$l['mp_profile_visitor_count'] = "Number of Profile Views";
 
 // xmlhttp.php
 $l['mp_profile_comments_invalid_user'] = "Invalid user";
