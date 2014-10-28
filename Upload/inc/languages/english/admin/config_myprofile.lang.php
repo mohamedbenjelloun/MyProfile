@@ -82,6 +82,8 @@ $l['mp_myprofile_visitors_enabled'] = "MyProfile Last Visitors Enabled";
 $l['mp_myprofile_visitors_enabled_desc'] = "Set to Yes if you want to enable last visitors, or No to disable it.";
 $l['mp_myprofile_visitors_record'] = "Number Of Visitors To Retrieve";
 $l['mp_myprofile_visitors_record_desc'] = "Select the number of visitors you want to retrieve on each user's profile.";
+$l['mp_myprofile_views_enabled'] = "Show Total Profile Views?";
+$l['mp_myprofile_views_enabled_desc'] = "If disabled, this saves one database query and the information will not be shown or updated.";
 
 //// buddylist
 $l['mp_myprofile_buddylist'] = "MyProfile Buddy List";
