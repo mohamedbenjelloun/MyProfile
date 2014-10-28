@@ -61,6 +61,9 @@ $plugins->add_hook("member_profile_end", array(MyProfileComments::get_instance()
 $plugins->add_hook("global_start", array(MyProfileComments::get_instance(), "global_start"));
 $plugins->add_hook("global_intermediate", array(MyProfileComments::get_instance(), "global_intermediate"));
 
+/* permission viewer */
+$plugins->add_hook("tools_permissionviewer_general_zero", array(MyProfileComments::get_instance(),"tools_permissionviewer_general_zero"));
+
 
 /* A custom MyAlerts Formatter for MyProfile Comments */
 if(class_exists("MybbStuff_MyAlerts_Formatter_AbstractFormatter")) {
@@ -154,6 +157,9 @@ class MyProfileComments {
 		if(! $db->field_exists("candeleteowncomments", "usergroups")) {
 			$db->add_column("usergroups", "candeleteowncomments", "int(1) NOT NULL default '0'");
 		}
+        if(! $db->field_exists("commentsperday", "usergroups")) {
+            $db->add_column("usergroups", "commentsperday", "int unsigned NOT NULL DEFAULT 0");
+        }
 		
 		/* giving "manage" access to administrators, and delete own comments */
 		$db->update_query("usergroups", array("canmanagecomments" => "1", "candeleteowncomments" => "1"), "gid='4'");
@@ -434,6 +440,9 @@ none={$lang->mp_myprofile_comments_notification_none}",
 		if($db->field_exists("candeleteowncomments", "usergroups")) {
 			$db->drop_column("usergroups", "candeleteowncomments");
 		}
+        if($db->field_exists("commentsperday", "usergroups")) {
+            $db->drop_column("usergroups", "commentsperday");
+        }
 		
 		$cache->update_usergroups();
 		
@@ -1382,6 +1391,43 @@ if(use_xmlhttprequest == "1")
 				return false;
 			}
 		}
+        /* Make sure they still have comments remaining */
+        $cutoff = TIME_NOW - 86400;
+        $countquery = $db->simple_select("myprofilecomments", "COUNT(cid) as dailycommenttotal", "time >= $cutoff");
+        $dailycommenttotal = $db->fetch_field($countquery, "dailycommenttotal");
+        // Because the $zerogroupgreater array can't be edited at this time, we have to do this the hard way.
+        $myusergroups = $user['usergroup'];
+        if($user['additionalgroups'])
+        {
+            $myusergroups .= "," . $useradditionalgroups;
+        }
+        $explodedgroups = explode(",", $myusergroups);
+        $commentsallowed = -1;
+        foreach($explodedgroups as $exgroup)
+        {
+            $groupcommentsallowed = $usergroups[$exgroup]['commentsperday'];
+            if($groupcommentsallowed == 0)
+            {
+                $commentsallowed = 0;
+                break;
+            }
+            else
+            {
+                if($groupcommentsallowed > $commentsallowed)
+                {
+                    $commentsallowed = $groupcommentsallowed;
+                }
+            }
+        }
+
+        if($commentsallowed != 0)
+        {
+            if($dailycommenttotal >= $commentsallowed)
+            {
+                return false;
+            }
+        }
+
 		/* I'm making a comment on my profile */
 		if($user["uid"] == $target["uid"]) {
 			return true;
@@ -1977,7 +2023,7 @@ if(use_xmlhttprequest == "1")
 	}
 	
 	public function admin_formcontainer_end() {
-		global $run_module, $form_container, $lang, $form, $mybb;
+		global $run_module, $form_container, $lang, $form, $mybb, $usergroup;
 		
 		if($run_module == "user" && !empty($form_container->_title) && !empty($lang->users_permissions) && $form_container->_title == $lang->users_permissions) {
 			MyProfileUtils::lang_load_config_myprofile();
@@ -1987,6 +2033,7 @@ if(use_xmlhttprequest == "1")
 			$mp_options[] = $form->generate_check_box("cansendcomments", 1, $lang->mp_options_can_send_comments, array('checked' => $mybb->input["cansendcomments"]));
 			$mp_options[] = $form->generate_check_box("caneditowncomments", 1, $lang->mp_options_can_edit_own_comments, array('checked' => $mybb->input["caneditowncomments"]));
 			$mp_options[] = $form->generate_check_box("candeleteowncomments", 1, $lang->mp_options_can_delete_own_comments, array('checked' => $mybb->input["candeleteowncomments"]));
+            $mp_options[] = $lang->mp_options_comments_per_day . "<br />" . $form->generate_text_box("commentsperday", $usergroup['commentsperday']);
 			
 			$form_container->output_row($lang->mp_myprofile, '', '<div class="group_settings_bit">'.implode('</div><div class="group_settings_bit">', $mp_options).'</div>');
 		}
@@ -1999,6 +2046,7 @@ if(use_xmlhttprequest == "1")
 		$updated_group['cansendcomments'] = $mybb->input['cansendcomments'];
 		$updated_group['caneditowncomments'] = $mybb->input['caneditowncomments'];
 		$updated_group['candeleteowncomments'] = $mybb->input['candeleteowncomments'];
+        $updated_group['commentsperday'] = (int) $mybb->input['commentsperday'];
 	}
 	
 	public function report_start() {
@@ -2195,6 +2243,12 @@ if(use_xmlhttprequest == "1")
 		$result["total"] = $result["sent"] + $result["received"];
 		return $result;
 	}
+
+    public function tools_permissionviewer_general_zero(&$groupzerogreater)
+    {
+        $groupzerogreater[] = "commentsperday";
+    }
+
 	
 	private function __construct() {
 		
