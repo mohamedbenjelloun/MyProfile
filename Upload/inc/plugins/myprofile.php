@@ -35,6 +35,7 @@ require_once MYBB_ROOT . "inc/plugins/myprofile/myprofileessence.class.php";
 require_once MYBB_ROOT . "inc/plugins/myprofile/myprofileutils.class.php";
 require_once MYBB_ROOT . "inc/plugins/myprofile/myprofilecomments.class.php";
 require_once MYBB_ROOT . "inc/plugins/myprofile/myprofilebuddylist.class.php";
+require_once MYBB_ROOT . "inc/plugins/myprofile/myprofilereferredby.class.php";
 require_once MYBB_ROOT . "inc/plugins/myprofile/myprofilevisitors.class.php";
 
 function myprofile_info() {
@@ -119,6 +120,7 @@ function myprofile_bundles_propagate_call($call_method, $parameters = array()) {
 		MyProfileEssence::get_instance(),
 		MyProfileComments::get_instance(),
 		MyProfileBuddyList::get_instance(),
+		MyProfileReferredBy::get_instance(),
 		MyProfileVisitors::get_instance()
 	);
 	$results = array();

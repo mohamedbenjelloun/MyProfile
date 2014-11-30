@@ -92,6 +92,12 @@ $l['mp_myprofile_buddylist_record'] = "Number Of Buddies To Retrieve On Each Pag
 $l['mp_myprofile_buddylist_record_desc'] = "Select the number of buddies you want to retrieve on each user's profile. Each line is constitued of 4 buddies, so selecting 8 for example will display a maximum of 2 lines.";
 $l['mp_myprofile_buddylist_avatar_max_dimensions'] = "Avatar Maximum Dimensions";
 $l['mp_myprofile_buddylist_avatar_max_dimensions_desc'] = "Set the maximum avatar dimensions, in the form <b>HEIGHTxWIDTH</b>, where HEIGHT and WIDTH are respectively the maximum height and width of the avatar.";
+ 
+//// permissions
+$l['mp_myprofile_referredby'] = "MyProfile ReferredBy";
+$l['mp_myprofile_referredby_desc'] = "Enables your users to show who referred them in their profiles.";
+$l['mp_myprofile_referredby_enabled'] = "MyProfile ReferredBy Enabled";
+$l['mp_myprofile_referredby_enabled_desc'] = "Set to Yes if you want to enable the ReferredBy feature on users profiles, or No to disable it.";
 
 // acp
 $l['mp_options_can_use_image_background'] = "Can use image background?";
