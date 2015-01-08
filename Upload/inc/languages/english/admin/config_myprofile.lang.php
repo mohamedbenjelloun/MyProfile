@@ -82,6 +82,8 @@ $l['mp_myprofile_visitors_enabled'] = "MyProfile Last Visitors Enabled";
 $l['mp_myprofile_visitors_enabled_desc'] = "Set to Yes if you want to enable last visitors, or No to disable it.";
 $l['mp_myprofile_visitors_record'] = "Number Of Visitors To Retrieve";
 $l['mp_myprofile_visitors_record_desc'] = "Select the number of visitors you want to retrieve on each user's profile.";
+$l['mp_myprofile_views_enabled'] = "Show Total Profile Views?";
+$l['mp_myprofile_views_enabled_desc'] = "If disabled, this saves one database query and the information will not be shown or updated.";
 
 //// buddylist
 $l['mp_myprofile_buddylist'] = "MyProfile Buddy List";
@@ -99,9 +101,27 @@ $l['mp_myprofile_referredby_desc'] = "Enables your users to show who referred th
 $l['mp_myprofile_referredby_enabled'] = "MyProfile ReferredBy Enabled";
 $l['mp_myprofile_referredby_enabled_desc'] = "Set to Yes if you want to enable the ReferredBy feature on users profiles, or No to disable it.";
 
+
+//// permissions
+$l['mp_myprofile_permissions'] = "MyProfile Permissions";
+$l['mp_myprofile_permissions_desc'] = "Enables your users to decide who can view their profiles.";
+$l['mp_myprofile_permissions_enabled'] = "MyProfile Permissions Enabled";
+$l['mp_myprofile_permissions_enabled_desc'] = "Set to Yes if you want to enable permission system on users profiles, or No to disable it.";
+$l['mp_myprofile_permissions_groups'] = "MyProfile Allowed Groups";
+$l['mp_myprofile_permissions_groups_desc'] = "Select the groups that can set their profile permission.";
+
 // acp
 $l['mp_options_can_use_image_background'] = "Can use image background?";
 $l['mp_options_can_manage_comments'] = "Can manage comments? (Can edit and delete all comments)";
 $l['mp_options_can_send_comments'] = "Can send comments?";
 $l['mp_options_can_edit_own_comments'] = "Can edit own comments?";
 $l['mp_options_can_delete_own_comments'] = "Can delete own comments?";
+$l['mp_options_comments_per_day'] = "The amount of comments this usergroup can send per day. Enter 0 for unlimited.";
+
+// Permission Viewer stuff
+$l['mp_options_can_use_image_background'] = "Can use image background?";
+$l['mp_options_canmanagecomments'] = "Can manage comments? (Can edit and delete all comments)";
+$l['mp_options_cansendcomments'] = "Can send comments?";
+$l['mp_options_caneditowncomments'] = "Can edit own comments?";
+$l['mp_options_candeleteowncomments'] = "Can delete own comments?";
+$l['mp_options_commentsperday'] = "Comments per day.";

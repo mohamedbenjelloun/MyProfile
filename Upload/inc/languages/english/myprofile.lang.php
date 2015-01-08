@@ -53,6 +53,7 @@ $l['mp_profile_visitors_no_visit'] = "Not visited yet.";
 $l['mp_profile_buddylist'] = "Buddy List";
 $l['mp_profile_comments_comments'] = "Comments";
 $l['mp_profile_comments_total'] = "Total";
+$l['mp_profile_visitor_count'] = "Number of Profile Views";
 
 // xmlhttp.php
 $l['mp_profile_comments_invalid_user'] = "Invalid user";
@@ -98,6 +99,11 @@ $l['mp_comments_new_comments'] = "You have received <b>{1}{2} new comment(s){3}<
 $l['mp_buddylist_no_friend'] = "{1} hasn't made any friends yet.";
 $l['mp_buddylist_friends'] = "{1} has made {2} friends, {3} of whom are displayed on this page.";
 
-// permissions 
 $l['mp_referredby'] = "Referred By:";
 $l['mp_referredby_none'] = "N/A";
+
+// permissions 
+$l['mp_myprofile_permissions_ucp'] = "Profile Privacy:";
+$l['myprofile_permissions_everybody'] = "Visible to Everybody";
+$l['myprofile_permissions_nobody'] = "Visible to Nobody";
+$l['myprofile_permissions_buddies'] = "Visible Only to Buddies";

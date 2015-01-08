@@ -37,6 +37,7 @@ require_once MYBB_ROOT . "inc/plugins/myprofile/myprofilecomments.class.php";
 require_once MYBB_ROOT . "inc/plugins/myprofile/myprofilebuddylist.class.php";
 require_once MYBB_ROOT . "inc/plugins/myprofile/myprofilereferredby.class.php";
 require_once MYBB_ROOT . "inc/plugins/myprofile/myprofilevisitors.class.php";
+require_once MYBB_ROOT . "inc/plugins/myprofile/myprofilepermissions.class.php";
 
 function myprofile_info() {
 	return array(
@@ -48,6 +49,8 @@ function myprofile_info() {
 		"version" => "0.5",
 		"compatibility" => "18*",
 		"guid" => "", // bye bye 1.6 :D
+		"language_file" => "config_myprofile",
+		"language_prefix" => "mp_options_",
 		"codename" => "myprofile"
     );
 }
@@ -72,9 +75,32 @@ function myprofile_is_installed() {
 }
 
 function myprofile_uninstall() {
-	global $cache;
-	myprofile_bundles_propagate_call("uninstall");
-	$cache->delete("myprofile");
+	global $mybb;
+
+	if($mybb->request_method == 'post')
+	{
+		if(!verify_post_check($mybb->input['my_post_key']))
+		{
+			global $lang;
+
+			flash_message($lang->invalid_post_verify_key2, 'error');
+			admin_redirect("index.php?module=config-plugins");
+		}
+
+		if(isset($mybb->input['no']))
+		{
+			admin_redirect('index.php?module=config-plugins');
+		}
+
+		myprofile_bundles_propagate_call("uninstall");
+		$mybb->cache->delete("myprofile");
+
+		return true;
+	}
+
+	global $page;
+
+	$page->output_confirm_action("index.php?module=config-plugins&action=deactivate&uninstall=1&plugin=myprofile");
 }
 
 function myprofile_activate() {
@@ -121,7 +147,8 @@ function myprofile_bundles_propagate_call($call_method, $parameters = array()) {
 		MyProfileComments::get_instance(),
 		MyProfileBuddyList::get_instance(),
 		MyProfileReferredBy::get_instance(),
-		MyProfileVisitors::get_instance()
+		MyProfileVisitors::get_instance(),
+		MyProfilePermissions::get_instance()
 	);
 	$results = array();
 	foreach($bundles as $bundle) {

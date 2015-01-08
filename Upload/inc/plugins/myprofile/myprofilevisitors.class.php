@@ -57,6 +57,12 @@ class MyProfileVisitors {
 		foreach($tables as $table) {
 			$db->write_query($table);
 		}
+
+        // Modify the users table
+        if(!$db->field_exists("viewcount", "users"))
+        {
+            $db->add_column("viewcount", "users", "int unsigned DEFAULT 0");
+        }
 		
 		$settinggroups = array(
 			"name" => "myprofilevisitors",
@@ -91,6 +97,15 @@ class MyProfileVisitors {
 			"value" => "10",
 			"gid" => $gid
 		);
+
+        $settings[] = array(
+        "name" => "mpprofileviewsenabled",
+        "title" => $lang->mp_myprofile_views_enabled,
+        "description" => $lang->mp_myprofile_views_enabled_desc,
+        "optionscode" => "yesno",
+        "value" => 1,
+        "gid" => $gid
+        );
 		
 		MyProfileUtils::insert_settings($settings);
 	}
@@ -104,9 +119,15 @@ class MyProfileVisitors {
 		global $db;
 		$db->drop_table("myprofilevisitors");
 		
+        if($db->field_exists("viewcount", "users"))
+        {
+            $db->drop_column("users", "viewcount");
+        }
+
 		$settings = array(
 			"mpvisitorsenabled",
-			"mpvisitorsrecord"
+			"mpvisitorsrecord",
+            "mpprofileviewsenabled"
 		);
 		MyProfileUtils::delete_settings($settings);
 		
@@ -130,11 +151,17 @@ class MyProfileVisitors {
 <tr>
 <td class="trow1">{$lastvisitors}</td>
 </tr>
+{$profilevisits}
 </table>
 </td>
 </tr>
 </table>
 ';
+
+$templates["myprofile_visitor_count"] = '<tr>
+<td class="trow1">{$lang->mp_profile_visitor_count} {$memprofile[\'viewcount\']}</td>
+</tr>';
+
 		MyProfileUtils::insert_templates($templates);
 		
 		find_replace_templatesets("member_profile", "#" . preg_quote('{$contact_details}') . "#i", '{$myprofile_visitors}{$contact_details}');
@@ -185,6 +212,20 @@ class MyProfileVisitors {
 				$db->insert_query("myprofilevisitors", $insert_array);
 			}
 		}
+
+        if($mybb->settings['mpprofileviewsenabled'])
+        {
+                // Check if a cookie exists so they can't refresh constantly to increment the counter
+                $cookiekey = "profile" . $memprofile['uid'];
+                if(!isset($mybb->cookies[$cookiekey]) && $memprofile['uid'] != $mybb->user['uid'])
+                {
+                    // update the view count
+                    $visitcount = $memprofile['viewcount'] + 1;
+                    $db->write_query("UPDATE " . TABLE_PREFIX . "users SET viewcount=$visitcount WHERE uid=" . $memprofile['uid']);
+                }
+                my_setcookie($cookiekey, 1, 300); // 5 minute delay should be adequate
+                eval("\$profilevisits = \"".$templates->get("myprofile_visitor_count")."\";");
+         }
 		
 		$query = $db->simple_select("myprofilevisitors", "*", "uid='{$memprofile['uid']}'", array(
 			"limit" => isset($settings["mpvisitorsrecord"]) && is_numeric($settings["mpvisitorsrecord"]) ? $settings["mpvisitorsrecord"] : "10",
