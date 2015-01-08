@@ -37,7 +37,7 @@ if(defined('THIS_SCRIPT') && THIS_SCRIPT == "member.php") {
 }
 
 /* load template */
-$plugins->add_hook("member_profile_end", array(MyProfileReferredBy::get_instance(), "usercp_profile_end"));
+$plugins->add_hook("member_profile_end", array(MyProfileReferredBy::get_instance(), "member_profile_end"));
 
 class MyProfileReferredBy {
 	
@@ -107,7 +107,7 @@ class MyProfileReferredBy {
 			return;
 		}
 
-		global $db, $memprofile, $myprofile_referredby, $lang;
+		global $db, $memprofile, $myprofile_referredby, $lang, $templates;
 		MyProfileUtils::lang_load_myprofile();
 
 		$myprofile_referredby = '';
