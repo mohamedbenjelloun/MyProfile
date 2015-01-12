@@ -99,6 +99,9 @@ $l['mp_comments_new_comments'] = "You have received <b>{1}{2} new comment(s){3}<
 $l['mp_buddylist_no_friend'] = "{1} hasn't made any friends yet.";
 $l['mp_buddylist_friends'] = "{1} has made {2} friends, {3} of whom are displayed on this page.";
 
+$l['mp_referredby'] = "Referred By:";
+$l['mp_referredby_none'] = "N/A";
+
 // permissions 
 $l['mp_myprofile_permissions_ucp'] = "Profile Privacy:";
 $l['myprofile_permissions_everybody'] = "Visible to Everybody";
