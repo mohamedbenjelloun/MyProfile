@@ -61,7 +61,7 @@ class MyProfileVisitors {
         // Modify the users table
         if(!$db->field_exists("viewcount", "users"))
         {
-            $db->add_column("viewcount", "users", "int unsigned DEFAULT 0");
+            $db->add_column("users", "viewcount", "int unsigned DEFAULT 0");
         }
 		
 		$settinggroups = array(
