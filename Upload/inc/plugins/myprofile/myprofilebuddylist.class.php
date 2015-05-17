@@ -209,7 +209,7 @@ class MyProfileBuddyList {
 		global $db, $settings;
 		$page = (int) $page;
 		$buddylist = array();
-		$count = count(explode(",", $memprofile["buddylist"]));
+		$count = count(array_filter(explode(",", $memprofile["buddylist"])));
 		$limit = is_numeric($settings["mpbuddylistrecord"]) ? (int) $settings["mpbuddylistrecord"] : 4;
 		$membuddylistarray = array_slice(explode(",", $memprofile["buddylist"]), ($page - 1) * $limit, $limit);
 		$membuddylist = implode(",", $membuddylistarray);
