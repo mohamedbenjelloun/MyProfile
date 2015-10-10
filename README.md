@@ -7,6 +7,8 @@ __Bundles up to now :__
 - Profile Comments
 - Last Visitors
 - Buddy List
+- Permissions
+- Referred by
 
 
 __Desired bundles :__
