@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Mohamed Benjelloun
+ * Copyright (c) 2015 Mohamed Benjelloun
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -178,7 +178,7 @@ var MyProfile = {
                 if (!obj.error) {
                     instance.val("");
                     MyProfile.commentsRetrieve(1);
-					MyProfile.notify(lang.mp_comments_comment_added_successfully);
+                    MyProfile.notify(lang.mp_comments_comment_added_successfully);
                 }
                 else {
                     MyProfile.notify(obj.error_message);
@@ -263,19 +263,24 @@ var MyProfile = {
                         modal.elm.find("iframe").length === 1 && modal.elm.find("iframe").css({
                             "height": "120px"
                         });
-                    });
+                    })
+                    .on($.modal.CLOSE, function (event, modal) {
+                        $("#modal-edit-comments").remove();
+                    })
+            ;
         }).fail(function(obj) {
             obj.responseText && MyProfile.notify(obj.responseText);
         });
     },
     commentsEditSubmit: function(event) {
         event.preventDefault();
-        if (MyProfile.commentsSCEditor) {
-            instance = $("#message_edit").sceditor("instance");
-        }
-        else {
+        var instance = {};
+        //if (MyProfile.commentsSCEditor) {
+        //    instance = $("#message_edit").sceditor("instance");
+        //}
+        //else {
             instance = $("#message_edit");
-        }
+        //}
         if (instance.val().length < MyProfile.commentsMinLength || instance.val().length > MyProfile.commentsMaxLength) {
             MyProfile.notify(MyProfile.sprintf(lang.mp_comments_comment_wrong_length, MyProfile.commentsMinLength, MyProfile.commentsMaxLength));
             return;
@@ -378,6 +383,6 @@ var MyProfile = {
 	}
 };
 
-$(document).ready(function() {
+jQuery(document).ready(function() {
     MyProfile.init();
 });

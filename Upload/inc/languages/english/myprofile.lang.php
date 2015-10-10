@@ -3,7 +3,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Mohamed Benjelloun
+ * Copyright (c) 2015 Mohamed Benjelloun
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,7 +53,7 @@ $l['mp_profile_visitors_no_visit'] = "Not visited yet.";
 $l['mp_profile_buddylist'] = "Buddy List";
 $l['mp_profile_comments_comments'] = "Comments";
 $l['mp_profile_comments_total'] = "Total";
-$l['mp_profile_visitor_count'] = "Number of Profile Views";
+$l['mp_profile_visitor_count'] = "Total profile views :";
 
 // xmlhttp.php
 $l['mp_profile_comments_invalid_user'] = "Invalid user";
@@ -107,3 +107,7 @@ $l['mp_myprofile_permissions_ucp'] = "Profile Privacy:";
 $l['myprofile_permissions_everybody'] = "Visible to Everybody";
 $l['myprofile_permissions_nobody'] = "Visible to Nobody";
 $l['myprofile_permissions_buddies'] = "Visible Only to Buddies";
+
+// alert
+// The following sentence will be : username has left you a comment on your profile.
+$l["myprofile_alert"] = "{1} has left you a comment on your profile.";
