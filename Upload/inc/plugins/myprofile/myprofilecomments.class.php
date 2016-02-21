@@ -923,7 +923,7 @@ $(document).ready(function() {
     }
 
     public function deactivate() {
-        global $db;
+        global $db, $cache;
         require_once MYBB_ROOT . "inc/adminfunctions_templates.php";
 
         $templates = array(
@@ -958,7 +958,7 @@ $(document).ready(function() {
         
         if (MyProfileUtils::myalerts_exists()) {
             if (MyProfileComments::myalerts_can_deintegrate()) {
-                $alertTypeManager = MybbStuff_MyAlerts_AlertTypeManager::getInstance();
+                $alertTypeManager = MybbStuff_MyAlerts_AlertTypeManager::createInstance($db, $cache);
                 $alertTypeManager->deleteByCode(MyProfileCommentsMyAlertsFormatter::alert_type_code());
             }
         }
@@ -986,7 +986,7 @@ $(document).ready(function() {
         /* now if the admin has chosen to activate MyAlerts, hook my custom alert formatter classe on global_start */
         if (in_array($settings["mpcommentsnotification"], array("myalertsoralertbar", "myalerts")) && MyProfileUtils::myalerts_exists()) {
             if (class_exists("MyProfileCommentsMyAlertsFormatter")) {
-                $formatterManager = MybbStuff_MyAlerts_AlertFormatterManager::getInstance();
+                $formatterManager = MybbStuff_MyAlerts_AlertFormatterManager::createInstance($mybb, $lang);
                 $formatterManager->registerFormatter(new MyProfileCommentsMyAlertsFormatter($mybb, $lang, MyProfileCommentsMyAlertsFormatter::alert_type_code()));
             }
         }
@@ -1677,7 +1677,7 @@ $(document).ready(function() {
     }
 
     public function alert_comment($user, $commentor, $cid) {
-        global $db, $settings, $cache;
+        global $mybb, $db, $settings, $cache, $plugins;
         /* if the admin choosed alertbar, or "MyAlerts or Alert bar" but MyAlerts don't exist, notify the user */
         if ($settings["mpcommentsnotification"] == "alertbar" || ($settings["mpcommentsnotification"] == "myalertsoralertbar" && !MyProfileUtils::myalerts_exists())) {
             $update_array = array(
@@ -1691,10 +1691,10 @@ $(document).ready(function() {
             if (isset($myalerts_plugins[MyProfileCommentsMyAlertsFormatter::alert_type_code()])
                     && $myalerts_plugins[MyProfileCommentsMyAlertsFormatter::alert_type_code()]['enabled'] == 1) {
                 $alertType = MybbStuff_MyAlerts_AlertTypeManager
-                        ::getInstance()
+                        ::createInstance($db, $cache)
                         ->getByCode(MyProfileCommentsMyAlertsFormatter::alert_type_code());
                 $alert = MybbStuff_MyAlerts_Entity_Alert::make($user["uid"], $alertType, null, array("cid" => $cid));
-                MybbStuff_MyAlerts_AlertManager::getInstance()->addAlert($alert);
+                MybbStuff_MyAlerts_AlertManager::createInstance($mybb, $db, $cache, $plugins, $alertType)->addAlert($alert);
             }
         }
     }
