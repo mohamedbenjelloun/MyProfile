@@ -3,7 +3,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Mohamed Benjelloun
+ * Copyright (c) 2015-2017 Mohamed Benjelloun
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -641,10 +641,10 @@ MyProfile.commentsPage = {$comments_page};
 <td class="trow1" align="left" style="width: 25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
 <td class="trow1" align="left">
 <select name="reason" id="report_reason">
-<option value="rules">{$lang->report_reason_rules}</option>
-<option value="bad">{$lang->report_reason_bad}</option>
-<option value="spam">{$lang->report_reason_spam}</option>
-<option value="other">{$lang->report_reason_other}</option>
+<option value="2">{$lang->report_reason_rules}</option>
+<option value="3">{$lang->report_reason_bad}</option>
+<option value="4">{$lang->report_reason_spam}</option>
+<option value="1">{$lang->report_reason_other}</option>
 </select>
 </td>
 </tr>
@@ -2048,14 +2048,18 @@ $(document).ready(function() {
     }
 
     public function report_start() {
-        global $lang;
-        MyProfileUtils::lang_load_myprofile();
+        global $lang, $report_type;
+        if ($report_type == 'comment') {
+            MyProfileUtils::lang_load_myprofile();
+        }
     }
 
     public function report_end() {
-        global $templates, $error, $report, $report_reasons, $mybb, $lang, $report_title;
-        if (empty($error) && empty($report)) {
-            eval("\$report_reasons = \"" . $templates->get("myprofile_comments_report_reasons") . "\";");
+        global $templates, $error, $report, $report_reasons, $mybb, $lang, $report_title, $report_type;
+        if ($report_type == 'comment') {
+            if (empty($error) && empty($report)) {
+                eval("\$report_reasons = \"" . $templates->get("myprofile_comments_report_reasons") . "\";");
+            }
         }
     }
 
