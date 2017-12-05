@@ -1143,7 +1143,7 @@ $(document).ready(function() {
             $limit = " LIMIT {$limit_start}, {$settings['mpcommentsperpage']}";
         } else {
             $limit = "";
-            $fields = "COUNT(*) AS rows";
+            $fields = "COUNT(*) AS `rows`";
         }
 
         $query = $db->query("SELECT {$fields} FROM " . TABLE_PREFIX . "myprofilecomments c, " . TABLE_PREFIX . "users u 
