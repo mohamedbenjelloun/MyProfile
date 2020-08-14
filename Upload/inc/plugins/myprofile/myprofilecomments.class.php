@@ -2040,10 +2040,10 @@ $(document).ready(function() {
     public function admin_user_groups_edit_commit() {
         global $updated_group, $mybb;
 
-        $updated_group['canmanagecomments'] = $mybb->input['canmanagecomments'];
-        $updated_group['cansendcomments'] = $mybb->input['cansendcomments'];
-        $updated_group['caneditowncomments'] = $mybb->input['caneditowncomments'];
-        $updated_group['candeleteowncomments'] = $mybb->input['candeleteowncomments'];
+        $updated_group['canmanagecomments'] = (int) $mybb->input['canmanagecomments'];
+        $updated_group['cansendcomments'] = (int) $mybb->input['cansendcomments'];
+        $updated_group['caneditowncomments'] = (int) $mybb->input['caneditowncomments'];
+        $updated_group['candeleteowncomments'] = (int) $mybb->input['candeleteowncomments'];
         $updated_group['commentsperday'] = (int) $mybb->input['commentsperday'];
     }
 
