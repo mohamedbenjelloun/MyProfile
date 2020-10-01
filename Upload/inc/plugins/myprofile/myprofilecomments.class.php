@@ -1636,7 +1636,7 @@ $(document).ready(function() {
             "userid" => (int) $user["uid"],
             "cuid" => (int) $mybb->user["uid"],
             "message" => $db->escape_string($message),
-            "approved" => $approved,
+            "approved" => (int) $approved,
             "isprivate" => $isprivate,
             "time" => TIME_NOW
         );
@@ -1667,7 +1667,7 @@ $(document).ready(function() {
 
         $update_array = array(
             "message" => $db->escape_string($message),
-            "approved" => $approved,
+            "approved" => (int) $approved,
             "isprivate" => $isprivate
         );
         $cid = $db->update_query("myprofilecomments", $update_array, "cid='{$cid}'", "1");
