@@ -54,8 +54,8 @@ abstract class MyProfileUtils {
      */
     public static function insert_settinggroups($settinggroups) {
         global $db;
-        $query = $db->simple_select("settinggroups", "COUNT(*) as `rows`");
-        $rows = $db->fetch_field($query, "rows");
+        $query = $db->simple_select("settinggroups", "COUNT(*) as `cnt`");
+        $rows = $db->fetch_field($query, "cnt");
         $settinggroups = array(
             "name" => $settinggroups["name"],
             "title" => $db->escape_string($settinggroups["title"]),
